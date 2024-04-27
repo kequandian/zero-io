@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.jfeat</groupId>
+    <artifactId>zero-io-pom</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>zero-io-pom</name>
+    <description>IO Library for Business</description>
+
+    <parent>
+        <groupId>com.jfeat</groupId>
+        <artifactId>pom-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <lombok.version>1.18.12</lombok.version>
+    </properties>
+
+    <dependencies>
+
+    </dependencies>
+
+    <modules>
+        <module>zero-io-common</module>
+        <module>zero-io-fs</module>
+        <module>zero-io-excel</module>
+        <module>zero-io-pdf</module>
+        <module>zero-io-all</module>
+        <module>zero-io-aliyun</module>
+        <module>zero-io-json</module>
+        <module>zero_io_icon</module>
+        <module>zero-io-json-plus</module>
+    </modules>
+
+</project>
