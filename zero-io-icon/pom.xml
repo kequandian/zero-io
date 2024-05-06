@@ -4,8 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>zero_io_icon</artifactId>
-    <version>1.0.0</version>
+    <artifactId>zero-io-icon</artifactId>
+    <version>1.0.1</version>
+
+    <!-- change history
+    @from 1.0.0 to 1.0.1
+       rename from zero_io_icon to zero-io-icon
+     -->
+     
 
     <parent>
         <groupId>com.jfeat</groupId>
