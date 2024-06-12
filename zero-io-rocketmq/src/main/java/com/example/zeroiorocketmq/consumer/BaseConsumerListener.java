@@ -14,8 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-//@RocketMQMessageListener(topic = "${rocketmq.topic}", consumerGroup = "${rocketmq.consumer.group}")
-@RocketMQMessageListener(topic = ".*", consumerGroup = "${rocketmq.consumer.group}")
+@RocketMQMessageListener(topic = "${rocketmq.topic}", consumerGroup = "${rocketmq.consumer.group}")
 public class BaseConsumerListener implements RocketMQListener<MessageExt>, RocketMQPushConsumerLifecycleListener {
 
 
@@ -37,7 +36,7 @@ public class BaseConsumerListener implements RocketMQListener<MessageExt>, Rocke
         String jsonBody = JackJsonUtil.toJSONString((new String(body)));
 
         // 消费者幂等处理: 设计去重表,防止重复消费
-        applicationContext.publishEvent(new BaseEvent(topic,tag, jsonBody));
+        applicationContext.publishEvent(new BaseEvent(tag, jsonBody));
     }
 
     @Override

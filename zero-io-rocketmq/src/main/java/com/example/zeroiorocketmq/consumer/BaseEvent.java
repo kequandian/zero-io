@@ -13,7 +13,7 @@ public class BaseEvent extends ApplicationEvent {
         super(source);
     }
 //    topic
-    private String topic;
+//    private String topic;
     /**
      * 消息tag
      */
@@ -26,42 +26,42 @@ public class BaseEvent extends ApplicationEvent {
 
     private Date date;
 
-    public BaseEvent( String topic,String msgTag, String source) {
+    public BaseEvent(String msgTag, String source) {
         super(source);
-        this.topic=topic;
+//        this.topic=topic;
         this.msgTag = msgTag;
     }
 
 
-    public BaseEvent(String topic,String msgTag, String source, Date date) {
+    public BaseEvent(String msgTag, String source, Date date) {
         super(source);
-        this.topic=topic;
+//        this.topic=topic;
         this.msgTag = msgTag;
         this.date = date;
     }
 
-    public BaseEvent(String topic,String msgTag, String source, String msgType) {
+    public BaseEvent(String msgTag, String source, String msgType) {
         super(source);
-        this.topic=topic;
+//        this.topic=topic;
         this.msgTag = msgTag;
         this.msgType = msgType;
     }
 
-    public BaseEvent(String topic,String msgTag, String source, String msgType, Date date) {
+    public BaseEvent(String msgTag, String source, String msgType, Date date) {
         super(source);
-        this.topic=topic;
+//        this.topic=topic;
         this.msgTag = msgTag;
         this.msgType = msgType;
         this.date = date;
     }
 
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
+//    public String getTopic() {
+//        return topic;
+//    }
+//
+//    public void setTopic(String topic) {
+//        this.topic = topic;
+//    }
 
     public String getMsgTag() {
         return msgTag;

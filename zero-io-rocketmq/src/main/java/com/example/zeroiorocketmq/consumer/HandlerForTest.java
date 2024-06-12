@@ -1,6 +1,8 @@
 package com.example.zeroiorocketmq.consumer;
 
+import com.example.zeroiorocketmq.Publisher;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -8,9 +10,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class HandlerForTest {
 
-    @EventListener(condition = "#event.msgTag=='" + "test")
+    @Autowired
+    Publisher publisher;
+
+    //    @EventListener(condition = "#event.msgTag=='" + "test")
+    @EventListener(condition = "#event.msgTag != null")
     public void execute(BaseEvent event) {
         Object source = event.getSource();
+        publisher.notifySubscribers(event.getMsgTag(),event.getSource().toString());
         log.info("事件监听类: tag: {}, msgType: {}, date: {}, data:{}", event.getMsgTag(), event.getMsgType(), event.getDate(), event.getSource());
     }
 }
