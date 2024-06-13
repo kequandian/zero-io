@@ -1,6 +1,6 @@
-package com.example.zeroiorocketmq.producer.service.impl;
+package com.jfeat.zeroiorocketmq.producer.service.impl;
 
-import com.example.zeroiorocketmq.producer.service.RocketMQProducer;
+import com.jfeat.zeroiorocketmq.producer.service.RocketMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ public class RocketMQProducerImpl implements RocketMQProducer {
         // 使用 'topic:tag' 格式发送消息
         String destination = topic + ":" + tag;
         SendResult sendResult = sendSyncMessage(destination,message);
-
         return sendResult;
     }
 }

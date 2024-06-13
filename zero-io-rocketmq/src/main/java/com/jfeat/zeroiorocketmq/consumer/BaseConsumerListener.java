@@ -1,8 +1,7 @@
-package com.example.zeroiorocketmq.consumer;
+package com.jfeat.zeroiorocketmq.consumer;
 
-import com.example.zeroiorocketmq.util.JackJsonUtil;
+import com.jfeat.zeroiorocketmq.util.JackJsonUtil;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
@@ -10,8 +9,6 @@ import org.apache.rocketmq.spring.core.RocketMQPushConsumerLifecycleListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 @RocketMQMessageListener(topic = "${rocketmq.topic}", consumerGroup = "${rocketmq.consumer.group}")
@@ -45,5 +42,6 @@ public class BaseConsumerListener implements RocketMQListener<MessageExt>, Rocke
         consumer.setMaxReconsumeTimes(3);
         // 如下，设置其它consumer相关属性
         consumer.setPullBatchSize(16);
+
     }
 }

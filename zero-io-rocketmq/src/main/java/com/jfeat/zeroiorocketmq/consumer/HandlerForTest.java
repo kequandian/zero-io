@@ -1,6 +1,6 @@
-package com.example.zeroiorocketmq.consumer;
+package com.jfeat.zeroiorocketmq.consumer;
 
-import com.example.zeroiorocketmq.Publisher;
+import com.jfeat.zeroiorocketmq.Publisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -10,10 +10,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class HandlerForTest {
 
-    @Autowired
-    Publisher publisher;
 
-    //    @EventListener(condition = "#event.msgTag=='" + "test")
+//    private Publisher publisher = Publisher.getInstance();
+
+    @Autowired
+    private Publisher publisher;
     @EventListener(condition = "#event.msgTag != null")
     public void execute(BaseEvent event) {
         Object source = event.getSource();

@@ -1,4 +1,4 @@
-package com.example.zeroiorocketmq.util;
+package com.jfeat.zeroiorocketmq.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

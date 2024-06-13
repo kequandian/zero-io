@@ -1,6 +1,6 @@
-package com.example.zeroiorocketmq.controller;
+package com.jfeat.zeroiorocketmq.controller;
 
-import com.example.zeroiorocketmq.producer.service.RocketMQProducer;
+import com.jfeat.zeroiorocketmq.producer.service.RocketMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +17,7 @@ public class TestController {
 
     @PostMapping("/send")
     public void sendMq(@RequestParam("tag") String tag,@RequestParam("msg")String msg){
-        SendResult sendResult = rocketMQProducer.sendSyncMessage("springboot-mq", tag, msg);
+        SendResult sendResult = rocketMQProducer.sendSyncMessage("HeartBeat", tag, msg);
         System.out.println(sendResult.getSendStatus());
     }
 

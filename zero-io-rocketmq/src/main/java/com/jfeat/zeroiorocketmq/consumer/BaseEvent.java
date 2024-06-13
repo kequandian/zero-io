@@ -1,4 +1,4 @@
-package com.example.zeroiorocketmq.consumer;
+package com.jfeat.zeroiorocketmq.consumer;
 
 import org.springframework.context.ApplicationEvent;
 

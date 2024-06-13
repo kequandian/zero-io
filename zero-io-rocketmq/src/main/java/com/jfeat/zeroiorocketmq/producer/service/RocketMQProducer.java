@@ -1,4 +1,4 @@
-package com.example.zeroiorocketmq.producer.service;
+package com.jfeat.zeroiorocketmq.producer.service;
 
 import org.apache.rocketmq.client.producer.SendResult;
 
