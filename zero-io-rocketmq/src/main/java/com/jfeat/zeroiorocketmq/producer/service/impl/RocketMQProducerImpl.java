@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 @Service
 public class RocketMQProducerImpl implements RocketMQProducer {
 
-    @Autowired
+    // @Autowired
+    @Resource
     private RocketMQTemplate rocketMQTemplate;
 
 
