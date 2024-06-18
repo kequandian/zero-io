@@ -1,4 +1,4 @@
-package com.jfeat.zeroiorocketmq;
+package com.jfeat.zeroiorocketmq.service;
 
 public interface RegisterService {
     void registerService(String name);

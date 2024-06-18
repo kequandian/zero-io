@@ -1,6 +1,6 @@
 package com.jfeat.zeroiorocketmq.consumer;
 
-import com.jfeat.zeroiorocketmq.Publisher;
+import com.jfeat.zeroiorocketmq.service.Publisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
