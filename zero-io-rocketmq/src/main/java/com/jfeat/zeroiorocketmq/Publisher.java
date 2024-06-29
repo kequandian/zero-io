@@ -1,4 +1,4 @@
-package com.jfeat.zeroiorocketmq.service;
+package com.jfeat.zeroiorocketmq;
 
 import org.springframework.stereotype.Service;
 
