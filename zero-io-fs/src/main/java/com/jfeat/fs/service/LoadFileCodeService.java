@@ -60,7 +60,7 @@ public interface LoadFileCodeService {
     UploadResp uploadByForm(MultipartFile file, String filePath, String fileName, String module, String userId);
 
     /**
-     * 通用文本上传文件
+     * 通用文本上传
      * @param text
      * @param filePath
      * @param fileName

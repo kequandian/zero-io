@@ -174,7 +174,7 @@ public class FileServiceEndpoint {
         }
     }
 
-    @ApiOperation(value = "通用文本上传文件", response = UploadResp.class)
+    @ApiOperation(value = "通用文本上传", response = UploadResp.class)
     @PostMapping("/api/fs/uploadByText")
     public Tip uploadByText(@RequestBody @Validated UploadByTextReq req) {
         try {
