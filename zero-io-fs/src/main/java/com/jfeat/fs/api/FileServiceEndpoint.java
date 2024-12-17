@@ -2,9 +2,12 @@ package com.jfeat.fs.api;
 
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
+import com.jfeat.crud.base.tips.ErrorTip;
 import com.jfeat.crud.base.tips.SuccessTip;
 import com.jfeat.crud.base.tips.Tip;
 import com.jfeat.crud.base.util.StrKit;
+import com.jfeat.fs.dto.req.UploadByTextReq;
+import com.jfeat.fs.dto.resp.UploadResp;
 import com.jfeat.fs.properties.FSProperties;
 import com.jfeat.fs.service.LoadFileCodeService;
 import com.jfeat.fs.model.FileInfo;
@@ -13,12 +16,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -160,4 +159,36 @@ public class FileServiceEndpoint {
 //        }
 //    }
 
+
+    @ApiOperation(value = "通用表单上传文件", response = UploadResp.class)
+    @PostMapping("/api/fs/uploadByForm")
+    public Tip uploadByForm(@RequestParam MultipartFile file,
+                          @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
+                          @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
+                          @RequestParam(required = true) @ApiParam("功能模块 方便定位问题") String module) {
+        try {
+            return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, ""));
+        } catch (Exception e) {
+            logger.error("upload err", e);
+            return ErrorTip.create(BusinessCode.UploadFileError);
+        }
+    }
+
+    @ApiOperation(value = "通用文本上传文件", response = UploadResp.class)
+    @PostMapping("/api/fs/uploadByText")
+    public Tip uploadByText(@RequestBody @Validated UploadByTextReq req) {
+        try {
+            return SuccessTip.create(loadFileCodeService.uploadByText(req.getText(), req.getFilePath(), req.getFileName(), req.getModule(), ""));
+        } catch (Exception e) {
+            logger.error("upload err", e);
+            return ErrorTip.create(BusinessCode.UploadFileError);
+        }
+    }
+
+
+    @ApiOperation(value = "通用上传上传", response = Boolean.class)
+    @GetMapping("/api/fs/delete")
+    public Tip delete(@RequestParam @ApiParam("文件路径 /images/head/jj.jpg") String fullPath) {
+        return SuccessTip.create(loadFileCodeService.delete(fullPath, ""));
+    }
 }
