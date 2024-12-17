@@ -44,7 +44,7 @@ public class FileServiceEndpoint {
     @Autowired
     LoadFileCodeService loadFileCodeService;
 
-    @ApiOperation(value = "上传文件", response = FileInfo.class)
+    @ApiOperation(value = "上传文件（下个版本废弃，不要再使用！）", response = FileInfo.class)
     @PostMapping("/api/fs/uploadfile")
     public Tip fileUpload(@RequestHeader(value = "authorization", required = false) String token,
                           @ApiParam("上传文件至不同的分组") @RequestHeader(value = "X-FS-BUCKET", required = false, defaultValue = "") String bucket,
@@ -186,7 +186,7 @@ public class FileServiceEndpoint {
     }
 
 
-    @ApiOperation(value = "通用上传上传", response = Boolean.class)
+    @ApiOperation(value = "文件删除", response = Boolean.class)
     @GetMapping("/api/fs/delete")
     public Tip delete(@RequestParam @ApiParam("文件路径 /images/head/jj.jpg") String fullPath) {
         return SuccessTip.create(loadFileCodeService.delete(fullPath, ""));
