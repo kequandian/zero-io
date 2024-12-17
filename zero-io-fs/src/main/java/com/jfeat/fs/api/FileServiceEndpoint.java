@@ -77,7 +77,7 @@ public class FileServiceEndpoint {
      * @return
      * @throws IOException
      */
-    @ApiOperation(value = "Base64格式上传图片", response = FileInfo.class)
+    @ApiOperation(value = "Base64格式上传图片 （下个版本废弃，不要再使用！）", response = FileInfo.class)
     @PostMapping("/api/fs/upload64")
     @ResponseBody
     public Tip base64Upload(@RequestHeader(value = "authorization", required = false) String token,
@@ -104,60 +104,6 @@ public class FileServiceEndpoint {
             throw new BusinessException(BusinessCode.UploadFileError);
         }
     }
-
-
-//    /**
-//     * form-data 方式上传图片
-//     *
-//     * @param picture
-//     * @return
-//     */
-//    @ApiOperation(value = "multipart方式上传图片", response = FileInfo.class)
-//    @PostMapping("/api/fs/uploadx")
-//    @ResponseBody
-//    public Tip formUpload(@RequestHeader(value = "authorization", required = false) String token,
-//                          @RequestParam(name = "blur", defaultValue = "false") Boolean blur,
-//                          @ApiParam("上传文件至不同的分组") @RequestHeader(value = "X-FS-BUCKET", required = false) String bucket,
-//                          @ApiParam("不同应用上传文件至独立目录") @RequestHeader(value = "X-FS-APPID", required = false) String appid,
-//                          @RequestPart("file") MultipartFile picture) {
-//        if (picture.isEmpty()) {
-//            throw new BusinessException(BusinessCode.BadRequest, "picture is empty");
-//        }
-//
-//        String originalFileName = picture.getOriginalFilename();
-//        String extensionName = FilenameUtils.getExtension(originalFileName);
-//        String pictureName = UUID.randomUUID().toString() + "." + extensionName;
-//        String blurryName = "";
-//        try {
-//            String fileSavePath = FSProperties.getFileUploadPath();
-//            {
-//                File fileSaveFile = new File(fileSavePath);
-//                if (!fileSaveFile.exists()) {
-//                    fileSaveFile.mkdirs();
-//                }
-//            }
-//
-//            File target = new File(fileSavePath + pictureName);
-//            target.setReadable(true);
-//            FileUtils.copyInputStreamToFile(picture.getInputStream(), target);
-//            logger.info("file uploaded to: {}", target.getAbsolutePath());
-//            File reducedFile = ImageUtil.reduce(target);
-//            logger.info("file reduced to: {}", reducedFile.getAbsolutePath());
-//            pictureName = reducedFile.getName();
-//            if (blur) {
-//                File blurryFile = ImageUtil.reduce(ImageUtil.gaos(target));
-//                blurryFile.setReadable(true);
-//                blurryName = blurryFile.getName();
-//            }
-//            return SuccessTip.create(FileInfo.create(FSProperties.getFileHost(), pictureName, blurryName));
-//
-//        } catch (Exception e) {
-//            logger.info("============== exception {} ===============");
-//            logger.info(e.getMessage());
-//            logger.info(e.getLocalizedMessage());
-//            throw new BusinessException(BusinessCode.UploadFileError);
-//        }
-//    }
 
 
     @ApiOperation(value = "通用表单上传文件", response = UploadResp.class)
