@@ -8,7 +8,6 @@ public class UploadResp {
     private String fileUrl;
     private String fileName;
     private Integer fileSize;
-    private String filePath;
     private String contentType;
 
 }

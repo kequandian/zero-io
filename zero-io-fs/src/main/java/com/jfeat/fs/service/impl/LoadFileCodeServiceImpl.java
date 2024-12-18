@@ -282,9 +282,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             minioClient.putObject(putObjectArgs);
 
             String fullPath = "/" + bucketName + "/"+ object;
-
             uploadResp.setContentType(contentType);
-            uploadResp.setFilePath("/" + bucketName + "/" + objectPath);
             uploadResp.setFileSize(fileSize);
             uploadResp.setFileName(objectName);
             uploadResp.setFullPath(fullPath);
