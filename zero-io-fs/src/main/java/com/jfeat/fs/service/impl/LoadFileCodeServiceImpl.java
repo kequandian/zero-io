@@ -257,7 +257,8 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         return new String[]{bucketName, objectPath};
     }
 
-    private UploadResp upload(InputStream in, String bucketName, String object, String contentType) {
+    private UploadResp upload(InputStream in, String bucketName,String objectPath, String objectName, String contentType) {
+        String object = objectPath + objectName;
         try {
             BucketExistsArgs existsArgs = BucketExistsArgs.builder().bucket(bucketName).build();
             boolean isExists = minioClient.bucketExists(existsArgs);
@@ -273,13 +274,19 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         UploadResp uploadResp = new UploadResp();
         try {
             long partSize = 64L * 1024L * 1024L; // 分片上传，每个分片64MB
+            int fileSize = in.available();
             PutObjectArgs putObjectArgs = PutObjectArgs.builder().bucket(bucketName)
-                    .object(object).stream(in, in.available(), partSize)
+                    .object(object).stream(in, fileSize, partSize)
                     .contentType(contentType)
                     .build();
             minioClient.putObject(putObjectArgs);
 
             String fullPath = "/" + bucketName + "/"+ object;
+
+            uploadResp.setContentType(contentType);
+            uploadResp.setFilePath("/" + bucketName + "/" + objectPath);
+            uploadResp.setFileSize(fileSize);
+            uploadResp.setFileName(objectName);
             uploadResp.setFullPath(fullPath);
             uploadResp.setFileUrl(exportEndpoint+fullPath);
         } catch (Exception e) {
@@ -329,8 +336,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         // 考虑存储数据库
         logger.info("file upload  realFileName={} fileName:{} module:{} userId:{}", realFileName, fileName, module, userId);
         try {
-            String lastSavePath = objectPath + fileName;
-            return upload(file.getInputStream(),bucketName,lastSavePath,file.getContentType());
+            return upload(file.getInputStream(),bucketName,objectPath,fileName,file.getContentType());
         } catch (Exception e) {
             logger.error("upload file fail:{}", e.getMessage());
             throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
@@ -359,8 +365,6 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             throw new BusinessException(BusinessCode.BadRequest,  "文件路径错误！");
         }
 
-
-
         String bucketName = bucketAndObject[0];
         String objectPath = bucketAndObject[1];
         if(StringUtils.isEmpty(fileName)) {
@@ -370,8 +374,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         // 考虑存储数据库
         logger.info("file upload fileName:{} module:{} userId:{}", fileName, module, userId);
         try {
-            String lastSavePath = objectPath + fileName;
-            return upload(dataInputStream, bucketName, lastSavePath, "application/octet-stream");
+            return upload(dataInputStream, bucketName, objectPath,fileName, "application/octet-stream");
         } catch (Exception e) {
             logger.error("upload file fail:{}", e.getMessage());
             throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
