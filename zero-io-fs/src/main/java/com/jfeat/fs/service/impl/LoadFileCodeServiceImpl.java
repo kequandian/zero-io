@@ -326,7 +326,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             suffix = realFileName.substring(realFileName.lastIndexOf("."));
         }
         if(StringUtils.isEmpty(fileName)) {
-            fileName = UUID.randomUUID().toString() + suffix;
+            fileName = StringUtils.replace(UUID.randomUUID().toString(),"-","") + suffix;
         } else if(!fileName.contains(".")) {
             fileName = fileName + suffix;
         }
@@ -366,7 +366,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         String bucketName = bucketAndObject[0];
         String objectPath = bucketAndObject[1];
         if(StringUtils.isEmpty(fileName)) {
-            fileName = UUID.randomUUID().toString();
+            fileName = StringUtils.replace(UUID.randomUUID().toString(),"-","");
         }
 
         // 考虑存储数据库
