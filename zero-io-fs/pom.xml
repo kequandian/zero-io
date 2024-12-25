@@ -16,6 +16,7 @@
 
     <properties>
         <skipStandalone>true</skipStandalone>
+        <minio.version>8.5.14</minio.version>
     </properties>
 
     <dependencies>
@@ -97,6 +98,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
         </dependency>
 
     </dependencies>

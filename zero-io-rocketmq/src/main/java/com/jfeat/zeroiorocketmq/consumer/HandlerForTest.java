@@ -11,14 +11,15 @@ import org.springframework.stereotype.Component;
 public class HandlerForTest {
 
 
-//    private Publisher publisher = Publisher.getInstance();
 
-    @Autowired
-    private Publisher publisher;
-    @EventListener(condition = "#event.msgTag != null")
-    public void execute(BaseEvent event) {
-        Object source = event.getSource();
-        publisher.notifySubscribers(event.getMsgTag(),event.getSource().toString());
-        log.info("事件监听类: tag: {}, msgType: {}, date: {}, data:{}", event.getMsgTag(), event.getMsgType(), event.getDate(), event.getSource());
-    }
+//    @Autowired
+//    private Publisher publisher;
+//    @EventListener(condition = "#event.msgTag != null ")
+//    public void execute(BaseEvent event) {
+//        Object source = event.getSource();
+//        publisher.notifySubscribers(event.getMsgTag(),event.getSource().toString());
+//        log.info("事件监听类: tag: {}, msgType: {}, date: {}, data:{}", event.getMsgTag(), event.getMsgType(), event.getDate(), event.getSource());
+//    }
+
+
 }

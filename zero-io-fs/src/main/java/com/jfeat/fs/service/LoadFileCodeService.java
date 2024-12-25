@@ -1,6 +1,7 @@
 package com.jfeat.fs.service;
 
 import com.jfeat.fs.model.FileInfo;
+import com.jfeat.fs.dto.resp.UploadResp;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -46,5 +47,35 @@ public interface LoadFileCodeService {
      * @throws IOException
      */
     FileInfo upload64(String base64Data, Boolean blur, String fileSavePath, String bucket, String appid, String fileHost) throws IOException;
+
+    /**
+     * 通用表单上传文件
+     * @param file
+     * @param filePath
+     * @param fileName
+     * @param module 接入的模块 可选
+     * @param userId 用户标识 可选
+     * @return UploadResp
+     */
+    UploadResp uploadByForm(MultipartFile file, String filePath, String fileName, String module, String userId);
+
+    /**
+     * 通用文本上传
+     * @param text
+     * @param filePath
+     * @param fileName
+     * @param module 接入的模块 可选
+     * @param userId 用户标识 可选
+     * @return UploadResp
+     */
+    UploadResp uploadByText(String text, String filePath, String fileName, String module, String userId);
+
+    /**
+     * 通用删除接口
+     * @param filePath
+     * @param userId
+     * @return
+     */
+    Boolean delete(String filePath, String userId);
 
 }

@@ -3,7 +3,7 @@ server:
 
 
 rocketmq:
-  topic: test
+  topic: HeartBeat
   name-server: 127.0.0.1:9876
   # ?????
   producer:

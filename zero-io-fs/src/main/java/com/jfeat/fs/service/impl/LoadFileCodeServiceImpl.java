@@ -4,7 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
-import com.jfeat.crud.base.tips.SuccessTip;
+import com.jfeat.fs.dto.resp.UploadResp;
 import com.jfeat.fs.service.LoadFileCodeService;
 import com.jfeat.fs.model.FileInfo;
 import com.jfeat.fs.util.ImageUtil;
@@ -12,14 +12,18 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
+import io.minio.*;
+import javax.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -33,13 +37,11 @@ import java.util.stream.Stream;
 @Service
 public class LoadFileCodeServiceImpl implements LoadFileCodeService {
 
-
     protected final static Logger logger = LoggerFactory.getLogger(LoadFileCodeService.class);
 
     final static String DEFAULT_BUCKET_IMAGES = "images";
     final static String DEFAULT_BUCKET_ATTACHMENTS = "attachments";
     final static String DEFAULT_BUCKET_DOCS = "docs";
-
 
     private static Cache<String, String> cache = CacheBuilder
             .newBuilder()
@@ -47,6 +49,31 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             .expireAfterAccess(60, TimeUnit.SECONDS) //当缓存项在指定的时间段内没有被读或写就会被回收。
             .build();
 
+    @Value("${io.minio.export-endpoint}")
+    private String exportEndpoint;
+    @Value("${io.minio.endpoint}")
+    private String minioUrl;
+    @Value("${io.minio.access-key}")
+    private String minioAccessKey;
+    @Value("${io.minio.secret-key}")
+    private String minioSecretKey;
+
+    private static MinioClient minioClient;
+
+    @PostConstruct
+    public void init() {
+        try {
+            logger.info("init minio start minioUrl={},minioAccessKey={},minioSecretKey={}", minioUrl, minioAccessKey, minioSecretKey);
+            minioClient =  MinioClient.builder()
+                    .endpoint(minioUrl)
+                    .credentials(minioAccessKey, minioSecretKey)
+                    .build();
+            logger.info("init minio success");
+        } catch (Exception e) {
+            logger.error("init minio fail={}", e.getMessage());
+            throw e;
+        }
+    }
 
     @Override
     public String genAndGetCode(String name) {
@@ -212,5 +239,166 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         }
 
         return FileInfo.create(fileHost, pictureName, blurryName);
+    }
+
+    /**
+     * 解析路径，返回 bucketName 和 objectName
+     * @param path
+     * @return
+     */
+    private String[] processPath(String path) {
+        //第二个 ‘/’ 下标
+        int index = path.indexOf("/", 1);
+        if(index == -1) {
+            return null;
+        }
+        String bucketName = path.substring(1, index);
+        String objectPath = path.substring(index + 1);
+        return new String[]{bucketName, objectPath};
+    }
+
+    private UploadResp upload(InputStream in, String bucketName,String objectPath, String objectName, String contentType) {
+        String object = objectPath + objectName;
+        try {
+            BucketExistsArgs existsArgs = BucketExistsArgs.builder().bucket(bucketName).build();
+            boolean isExists = minioClient.bucketExists(existsArgs);
+            if (!isExists) {
+                MakeBucketArgs makeArgs = MakeBucketArgs.builder().bucket(bucketName).build();
+                minioClient.makeBucket(makeArgs);
+            }
+        } catch (Exception e) {
+            logger.error("check and create bucket fail:{}", e.getMessage());
+            throw new BusinessException(BusinessCode.BadRequest,  "检查并创建文件桶失败！");
+        }
+
+        UploadResp uploadResp = new UploadResp();
+        try {
+            long partSize = 64L * 1024L * 1024L; // 分片上传，每个分片64MB
+            int fileSize = in.available();
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder().bucket(bucketName)
+                    .object(object).stream(in, fileSize, partSize)
+                    .contentType(contentType)
+                    .build();
+            minioClient.putObject(putObjectArgs);
+
+            String fullPath = "/" + bucketName + "/"+ object;
+            uploadResp.setContentType(contentType);
+            uploadResp.setFileSize(fileSize);
+            uploadResp.setFileName(objectName);
+            uploadResp.setFullPath(fullPath);
+            uploadResp.setFileUrl(exportEndpoint+fullPath);
+        } catch (Exception e) {
+            logger.error("upload file fail:{}", e.getMessage());
+            throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                logger.error("close err", e);
+            }
+        }
+        return  uploadResp;
+    }
+
+    @Override
+    public UploadResp uploadByForm(MultipartFile file, String filePath, String fileName, String module, String userId) {
+        if(!StringUtils.startsWithIgnoreCase(filePath, "/")) {
+            throw new BusinessException(BusinessCode.BadRequest,  "文件路径需要/开头");
+        }
+        if(!StringUtils.endsWithIgnoreCase(filePath, "/")) {
+            throw new BusinessException(BusinessCode.BadRequest,  "文件路径需要/结尾");
+        }
+        String[] bucketAndObject = processPath(filePath);
+        if(bucketAndObject == null) {
+            logger.info("file upload file path err {}",filePath);
+            throw new BusinessException(BusinessCode.BadRequest,  "文件路径错误！");
+        }
+
+        if(file.isEmpty()) {
+            throw new BusinessException(BusinessCode.BadRequest,  "文件不可为空！");
+        }
+
+        String bucketName = bucketAndObject[0];
+        String objectPath = bucketAndObject[1];
+        String realFileName = file.getOriginalFilename();
+        String suffix = "";
+        if(realFileName.lastIndexOf(".") > 0) {
+            suffix = realFileName.substring(realFileName.lastIndexOf("."));
+        }
+        if(StringUtils.isEmpty(fileName)) {
+            fileName = StringUtils.replace(UUID.randomUUID().toString(),"-","") + suffix;
+        } else if(!fileName.contains(".")) {
+            fileName = fileName + suffix;
+        }
+
+        // 考虑存储数据库
+        logger.info("file upload  realFileName={} fileName:{} module:{} userId:{}", realFileName, fileName, module, userId);
+        try {
+            return upload(file.getInputStream(),bucketName,objectPath,fileName,file.getContentType());
+        } catch (Exception e) {
+            logger.error("upload file fail:{}", e.getMessage());
+            throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
+        }
+    }
+
+    @Override
+    public UploadResp uploadByText(String text, String filePath, String fileName, String module, String userId) {
+        if(!StringUtils.startsWithIgnoreCase(filePath, "/")) {
+            throw new BusinessException(BusinessCode.BadRequest,  "文件路径需要/开头");
+        }
+        if(!StringUtils.endsWithIgnoreCase(filePath, "/")) {
+            throw new BusinessException(BusinessCode.BadRequest,  "文件路径需要/结尾");
+        }
+
+        ByteArrayInputStream dataInputStream = null;
+        try {
+            dataInputStream = new ByteArrayInputStream(text.getBytes("UTF-8"));
+        } catch (Exception e) {
+            throw new BusinessException(BusinessCode.BadRequest,  "字符转utf-8错误");
+        }
+
+        String[] bucketAndObject = processPath(filePath);
+        if(bucketAndObject == null) {
+            logger.info("file upload file path err {}",filePath);
+            throw new BusinessException(BusinessCode.BadRequest,  "文件路径错误！");
+        }
+
+        String bucketName = bucketAndObject[0];
+        String objectPath = bucketAndObject[1];
+        if(StringUtils.isEmpty(fileName)) {
+            fileName = StringUtils.replace(UUID.randomUUID().toString(),"-","");
+        }
+
+        // 考虑存储数据库
+        logger.info("file upload fileName:{} module:{} userId:{}", fileName, module, userId);
+        try {
+            return upload(dataInputStream, bucketName, objectPath,fileName, "application/octet-stream");
+        } catch (Exception e) {
+            logger.error("upload file fail:{}", e.getMessage());
+            throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
+        }
+    }
+
+    @Override
+    public Boolean delete(String filePath, String userId) {
+        String[] bucketAndObject = processPath(filePath);
+        if(bucketAndObject == null) {
+            logger.info("file upload file path err {}", filePath);
+            throw new BusinessException(BusinessCode.GeneralIOError);
+        }
+
+        String bucketName = bucketAndObject[0];
+        String objectPath = bucketAndObject[1];
+        //根据objectName删除minio的数据
+        try {
+            RemoveObjectArgs removeObjectArgs = RemoveObjectArgs.builder().bucket(bucketName)
+                    .object(objectPath)
+                    .build();
+            minioClient.removeObject(removeObjectArgs);
+        } catch (Exception e) {
+            logger.error("删除minio文件失败={}" , e.getMessage(), e);
+            throw new BusinessException(BusinessCode.GeneralIOError);
+        }
+        return true;
     }
 }

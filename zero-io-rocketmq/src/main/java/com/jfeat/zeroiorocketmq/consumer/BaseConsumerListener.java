@@ -26,6 +26,7 @@ public class BaseConsumerListener implements RocketMQListener<MessageExt>, Rocke
         String keys = message.getKeys();
         String msgId = message.getMsgId();
         String realTopic = message.getProperty("REAL_TOPIC");
+        System.out.println("topic:"+topic);
         String originMessageId = message.getProperty("ORIGIN_MESSAGE_ID");
         // 获取重试的次数 失败一次消息中的失败次数会累加一次
         int reconsumeTimes = message.getReconsumeTimes();

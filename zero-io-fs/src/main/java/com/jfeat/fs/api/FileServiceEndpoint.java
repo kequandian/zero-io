@@ -2,9 +2,12 @@ package com.jfeat.fs.api;
 
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
+import com.jfeat.crud.base.tips.ErrorTip;
 import com.jfeat.crud.base.tips.SuccessTip;
 import com.jfeat.crud.base.tips.Tip;
 import com.jfeat.crud.base.util.StrKit;
+import com.jfeat.fs.dto.req.UploadByTextReq;
+import com.jfeat.fs.dto.resp.UploadResp;
 import com.jfeat.fs.properties.FSProperties;
 import com.jfeat.fs.service.LoadFileCodeService;
 import com.jfeat.fs.model.FileInfo;
@@ -13,12 +16,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -45,7 +44,7 @@ public class FileServiceEndpoint {
     @Autowired
     LoadFileCodeService loadFileCodeService;
 
-    @ApiOperation(value = "上传文件", response = FileInfo.class)
+    @ApiOperation(value = "上传文件（下个版本废弃，不要再使用！）", response = FileInfo.class)
     @PostMapping("/api/fs/uploadfile")
     public Tip fileUpload(@RequestHeader(value = "authorization", required = false) String token,
                           @ApiParam("上传文件至不同的分组") @RequestHeader(value = "X-FS-BUCKET", required = false, defaultValue = "") String bucket,
@@ -78,7 +77,7 @@ public class FileServiceEndpoint {
      * @return
      * @throws IOException
      */
-    @ApiOperation(value = "Base64格式上传图片", response = FileInfo.class)
+    @ApiOperation(value = "Base64格式上传图片 （下个版本废弃，不要再使用！）", response = FileInfo.class)
     @PostMapping("/api/fs/upload64")
     @ResponseBody
     public Tip base64Upload(@RequestHeader(value = "authorization", required = false) String token,
@@ -107,57 +106,35 @@ public class FileServiceEndpoint {
     }
 
 
-//    /**
-//     * form-data 方式上传图片
-//     *
-//     * @param picture
-//     * @return
-//     */
-//    @ApiOperation(value = "multipart方式上传图片", response = FileInfo.class)
-//    @PostMapping("/api/fs/uploadx")
-//    @ResponseBody
-//    public Tip formUpload(@RequestHeader(value = "authorization", required = false) String token,
-//                          @RequestParam(name = "blur", defaultValue = "false") Boolean blur,
-//                          @ApiParam("上传文件至不同的分组") @RequestHeader(value = "X-FS-BUCKET", required = false) String bucket,
-//                          @ApiParam("不同应用上传文件至独立目录") @RequestHeader(value = "X-FS-APPID", required = false) String appid,
-//                          @RequestPart("file") MultipartFile picture) {
-//        if (picture.isEmpty()) {
-//            throw new BusinessException(BusinessCode.BadRequest, "picture is empty");
-//        }
-//
-//        String originalFileName = picture.getOriginalFilename();
-//        String extensionName = FilenameUtils.getExtension(originalFileName);
-//        String pictureName = UUID.randomUUID().toString() + "." + extensionName;
-//        String blurryName = "";
-//        try {
-//            String fileSavePath = FSProperties.getFileUploadPath();
-//            {
-//                File fileSaveFile = new File(fileSavePath);
-//                if (!fileSaveFile.exists()) {
-//                    fileSaveFile.mkdirs();
-//                }
-//            }
-//
-//            File target = new File(fileSavePath + pictureName);
-//            target.setReadable(true);
-//            FileUtils.copyInputStreamToFile(picture.getInputStream(), target);
-//            logger.info("file uploaded to: {}", target.getAbsolutePath());
-//            File reducedFile = ImageUtil.reduce(target);
-//            logger.info("file reduced to: {}", reducedFile.getAbsolutePath());
-//            pictureName = reducedFile.getName();
-//            if (blur) {
-//                File blurryFile = ImageUtil.reduce(ImageUtil.gaos(target));
-//                blurryFile.setReadable(true);
-//                blurryName = blurryFile.getName();
-//            }
-//            return SuccessTip.create(FileInfo.create(FSProperties.getFileHost(), pictureName, blurryName));
-//
-//        } catch (Exception e) {
-//            logger.info("============== exception {} ===============");
-//            logger.info(e.getMessage());
-//            logger.info(e.getLocalizedMessage());
-//            throw new BusinessException(BusinessCode.UploadFileError);
-//        }
-//    }
+    @ApiOperation(value = "通用表单上传文件", response = UploadResp.class)
+    @PostMapping("/api/fs/uploadByForm")
+    public Tip uploadByForm(@RequestParam MultipartFile file,
+                          @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
+                          @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
+                          @RequestParam(required = true) @ApiParam("功能模块 方便定位问题") String module) {
+        try {
+            return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, ""));
+        } catch (Exception e) {
+            logger.error("upload err", e);
+            return ErrorTip.create(BusinessCode.UploadFileError);
+        }
+    }
 
+    @ApiOperation(value = "通用文本上传", response = UploadResp.class)
+    @PostMapping("/api/fs/uploadByText")
+    public Tip uploadByText(@RequestBody @Validated UploadByTextReq req) {
+        try {
+            return SuccessTip.create(loadFileCodeService.uploadByText(req.getText(), req.getFilePath(), req.getFileName(), req.getModule(), ""));
+        } catch (Exception e) {
+            logger.error("upload err", e);
+            return ErrorTip.create(BusinessCode.UploadFileError);
+        }
+    }
+
+
+    @ApiOperation(value = "文件删除", response = Boolean.class)
+    @GetMapping("/api/fs/delete")
+    public Tip delete(@RequestParam @ApiParam("文件路径 /images/head/jj.jpg") String fullPath) {
+        return SuccessTip.create(loadFileCodeService.delete(fullPath, ""));
+    }
 }
