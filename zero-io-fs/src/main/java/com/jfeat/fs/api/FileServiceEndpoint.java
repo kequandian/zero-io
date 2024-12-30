@@ -105,7 +105,7 @@ public class FileServiceEndpoint {
         }
     }
 
-
+    // updated in 2024-12-30 修改增加 /adm
     @ApiOperation(value = "通用表单上传文件", response = UploadResp.class)
     @PostMapping("/api/fs/uploadByForm")
     public Tip uploadByForm(@RequestParam MultipartFile file,
@@ -120,8 +120,9 @@ public class FileServiceEndpoint {
         }
     }
 
+    // updated in 2024-12-30 修改增加 /adm
     @ApiOperation(value = "通用文本上传", response = UploadResp.class)
-    @PostMapping("/api/fs/uploadByText")
+    @PostMapping("/api/adm/fs/uploadByText")
     public Tip uploadByText(@RequestBody @Validated UploadByTextReq req) {
         try {
             return SuccessTip.create(loadFileCodeService.uploadByText(req.getText(), req.getFilePath(), req.getFileName(), req.getModule(), ""));
@@ -131,9 +132,9 @@ public class FileServiceEndpoint {
         }
     }
 
-
+    // updated in 2024-12-30 修改增加 /adm
     @ApiOperation(value = "文件删除", response = Boolean.class)
-    @GetMapping("/api/fs/delete")
+    @GetMapping("/api/adm/fs/delete")
     public Tip delete(@RequestParam @ApiParam("文件路径 /images/head/jj.jpg") String fullPath) {
         return SuccessTip.create(loadFileCodeService.delete(fullPath, ""));
     }
