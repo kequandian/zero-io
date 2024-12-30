@@ -70,6 +70,32 @@ public class FileServiceEndpoint {
         }
     }
 
+    @ApiOperation(value = "上传文件（下个版本废弃，不要再使用！）", response = FileInfo.class)
+    @PostMapping("/api/adm/fs/uploadfile")
+    public Tip admFileUpload(@RequestHeader(value = "authorization", required = false) String token,
+                          @ApiParam("上传文件至不同的分组") @RequestHeader(value = "X-FS-BUCKET", required = false, defaultValue = "") String bucket,
+                          @ApiParam("不同应用上传文件至独立目录") @RequestHeader(value = "X-FS-APPID", required = false, defaultValue = "") String appid,
+                          @RequestPart("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new BusinessException(BusinessCode.BadRequest, "file is empty");
+        }
+        String fileHost = FSProperties.getFileHost();
+        String fileSavePath = FSProperties.getFileUploadPath();
+
+        try {
+            logger.info("============== upload start ===============");
+            FileInfo fileInfo = loadFileCodeService.uploadFile(file, fileSavePath, bucket, appid, fileHost);
+            return SuccessTip.create(fileInfo);
+
+        } catch (Exception e) {
+            logger.info("============== exception {} ===============");
+            logger.info(e.getMessage());
+            logger.info(e.getLocalizedMessage());
+//            logger.info(e.toString());
+            throw new BusinessException(BusinessCode.UploadFileError);
+        }
+    }
+
     /**
      * 数据格式
      * data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ
@@ -107,7 +133,7 @@ public class FileServiceEndpoint {
 
     // updated in 2024-12-30 修改增加 /adm
     @ApiOperation(value = "通用表单上传文件", response = UploadResp.class)
-    @PostMapping("/api/fs/uploadByForm")
+    @PostMapping("/api/adm/fs/uploadByForm")
     public Tip uploadByForm(@RequestParam MultipartFile file,
                           @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
                           @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
