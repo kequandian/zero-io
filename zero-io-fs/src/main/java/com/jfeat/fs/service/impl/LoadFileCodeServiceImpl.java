@@ -5,9 +5,10 @@ import com.google.common.cache.CacheBuilder;
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
 import com.jfeat.fs.dto.resp.UploadResp;
-import com.jfeat.fs.service.LoadFileCodeService;
 import com.jfeat.fs.model.FileInfo;
+import com.jfeat.fs.service.LoadFileCodeService;
 import com.jfeat.fs.util.ImageUtil;
+import io.minio.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import io.minio.*;
+
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -342,7 +343,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
     }
 
     @Override
-    public UploadResp uploadByText(String text, String filePath, String fileName, String module, String userId) {
+    public UploadResp uploadBytes(byte[] bytes, String fileSuffix, String contentType, String filePath, String fileName, String module, String userId) {
         if(!StringUtils.startsWithIgnoreCase(filePath, "/")) {
             throw new BusinessException(BusinessCode.BadRequest,  "文件路径需要/开头");
         }
@@ -352,7 +353,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
 
         ByteArrayInputStream dataInputStream = null;
         try {
-            dataInputStream = new ByteArrayInputStream(text.getBytes("UTF-8"));
+            dataInputStream = new ByteArrayInputStream(bytes);
         } catch (Exception e) {
             throw new BusinessException(BusinessCode.BadRequest,  "字符转utf-8错误");
         }
@@ -366,18 +367,19 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         String bucketName = bucketAndObject[0];
         String objectPath = bucketAndObject[1];
         if(StringUtils.isEmpty(fileName)) {
-            fileName = StringUtils.replace(UUID.randomUUID().toString(),"-","");
+            fileName = StringUtils.replace(UUID.randomUUID().toString(),"-","") + "." + fileSuffix;
         }
 
         // 考虑存储数据库
         logger.info("file upload fileName:{} module:{} userId:{}", fileName, module, userId);
         try {
-            return upload(dataInputStream, bucketName, objectPath,fileName, "application/octet-stream");
+            return upload(dataInputStream, bucketName, objectPath, fileName, contentType);
         } catch (Exception e) {
-            logger.error("upload file fail:{}", e.getMessage());
+            logger.error("upload file fail:", e);
             throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
         }
     }
+
 
     @Override
     public Boolean delete(String filePath, String userId) {

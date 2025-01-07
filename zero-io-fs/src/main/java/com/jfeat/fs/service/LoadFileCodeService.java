@@ -61,14 +61,16 @@ public interface LoadFileCodeService {
 
     /**
      * 通用文本上传
-     * @param text
+     * @param bytes
+     * @param fileSuffix
+     * @param contentType
      * @param filePath
      * @param fileName
      * @param module 接入的模块 可选
      * @param userId 用户标识 可选
      * @return UploadResp
      */
-    UploadResp uploadByText(String text, String filePath, String fileName, String module, String userId);
+    UploadResp uploadBytes(byte[] bytes, String fileSuffix, String contentType, String filePath, String fileName, String module, String userId);
 
     /**
      * 通用删除接口

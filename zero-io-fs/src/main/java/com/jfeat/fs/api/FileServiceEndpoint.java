@@ -121,11 +121,16 @@ public class FileServiceEndpoint {
     }
 
     // updated in 2024-12-30 修改增加 /adm
-    @ApiOperation(value = "通用文本上传", response = UploadResp.class)
-    @PostMapping("/api/adm/fs/uploadByText")
-    public Tip uploadByText(@RequestBody @Validated UploadByTextReq req) {
+    @ApiOperation(value = "通用字节数组上传", response = UploadResp.class)
+    @PostMapping("/api/adm/fs/uploadBytes")
+    public Tip uploadBytes(@RequestParam byte[] bytes,
+                            @RequestParam(required = true) @ApiParam("文件后缀") String fileSuffix,
+                            @RequestParam(required = true) @ApiParam("文件类型") String contentType,
+                            @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
+                            @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
+                            @RequestParam(required = true) @ApiParam("功能模块 方便定位问题") String module) {
         try {
-            return SuccessTip.create(loadFileCodeService.uploadByText(req.getText(), req.getFilePath(), req.getFileName(), req.getModule(), ""));
+            return SuccessTip.create(loadFileCodeService.uploadBytes(bytes, fileSuffix,contentType, filePath, fileName,module, ""));
         } catch (Exception e) {
             logger.error("upload err", e);
             return ErrorTip.create(BusinessCode.UploadFileError);
