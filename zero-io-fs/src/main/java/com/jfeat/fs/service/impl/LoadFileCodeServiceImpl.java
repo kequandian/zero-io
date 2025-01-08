@@ -284,7 +284,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
 
             String fullPath = "/" + bucketName + "/"+ object;
             uploadResp.setContentType(contentType);
-            uploadResp.setFileSize(fileSize / 1024);
+            uploadResp.setFileSize(fileSize);
             uploadResp.setFileName(objectName);
             uploadResp.setFullPath(fullPath);
             uploadResp.setFileUrl(exportEndpoint+fullPath);
