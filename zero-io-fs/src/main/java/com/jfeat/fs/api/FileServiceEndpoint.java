@@ -105,10 +105,9 @@ public class FileServiceEndpoint {
         }
     }
 
-    // updated in 2024-12-30 修改增加 /adm
     @ApiOperation(value = "通用表单上传文件", response = UploadResp.class)
     @PostMapping("/api/adm/fs/uploadByForm")
-    public Tip uploadByForm(@RequestParam MultipartFile file,
+    public Tip admUploadByForm(@RequestParam MultipartFile file,
                           @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
                           @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
                           @RequestParam(required = true) @ApiParam("功能模块 方便定位问题") String module) {
@@ -120,7 +119,20 @@ public class FileServiceEndpoint {
         }
     }
 
-    // updated in 2024-12-30 修改增加 /adm
+    @ApiOperation(value = "通用表单上传文件", response = UploadResp.class)
+    @PostMapping("/api/fs/uploadByForm")
+    public Tip uploadByForm(@RequestParam MultipartFile file,
+                            @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
+                            @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
+                            @RequestParam(required = true) @ApiParam("功能模块 方便定位问题") String module) {
+        try {
+            return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, ""));
+        } catch (Exception e) {
+            logger.error("upload err", e);
+            return ErrorTip.create(BusinessCode.UploadFileError);
+        }
+    }
+
     @ApiOperation(value = "通用字节数组上传", response = UploadResp.class)
     @PostMapping("/api/adm/fs/uploadBytes")
     public Tip uploadBytes(@RequestParam byte[] bytes,
@@ -137,7 +149,6 @@ public class FileServiceEndpoint {
         }
     }
 
-    // updated in 2024-12-30 修改增加 /adm
     @ApiOperation(value = "文件删除", response = Boolean.class)
     @GetMapping("/api/adm/fs/delete")
     public Tip delete(@RequestParam @ApiParam("文件路径 /images/head/jj.jpg") String fullPath) {
