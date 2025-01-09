@@ -7,10 +7,10 @@ io:
   bucket-app-id: "32791238237612378123"
   bucket-app-secret: "EF8WnIPlnDFYPEIt"
   minio:
-    export-endpoint: "http://202.63.172.178:9000"
-    endpoint: "http://202.63.172.178:9000"
+    export-endpoint: "http://202.189.9.147:9000"
+    endpoint: "http://202.189.9.147:9000"
     access-key: "admin"
-    secret-key: "11111111"
+    secret-key: "jfeat.com.24"
 
 spring:
   profiles:
