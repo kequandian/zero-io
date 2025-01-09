@@ -125,7 +125,7 @@ public class FileServiceEndpoint {
     @PostMapping("/api/adm/fs/uploadBytes")
     public Tip uploadBytes(@RequestParam byte[] bytes,
                             @RequestParam(required = true) @ApiParam("文件后缀") String fileSuffix,
-                            @RequestParam(required = true) @ApiParam("文件类型") String contentType,
+                            @RequestParam(required = false) @ApiParam("文件类型") String contentType,
                             @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
                             @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
                             @RequestParam(required = true) @ApiParam("功能模块 方便定位问题") String module) {

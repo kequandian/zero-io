@@ -259,6 +259,9 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
     }
 
     private UploadResp upload(InputStream in, String bucketName,String objectPath, String objectName, String contentType) {
+        if(StringUtils.isEmpty(contentType)) {
+            contentType = "application/octet-stream";
+        }
         String object = objectPath + objectName;
         try {
             BucketExistsArgs existsArgs = BucketExistsArgs.builder().bucket(bucketName).build();
