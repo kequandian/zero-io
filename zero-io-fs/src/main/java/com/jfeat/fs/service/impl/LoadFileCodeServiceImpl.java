@@ -329,10 +329,10 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         if(realFileName.lastIndexOf(".") > 0) {
             suffix = realFileName.substring(realFileName.lastIndexOf("."));
         }
-        if(StringUtils.isEmpty(fileName)) {
-            fileName = StringUtils.replace(UUID.randomUUID().toString(), "-", "") + suffix;
-        }else if(useOriginName != null && useOriginName) {
+        if(useOriginName != null && useOriginName) {
             fileName = realFileName;
+        } else if(StringUtils.isEmpty(fileName)) {
+            fileName = StringUtils.replace(UUID.randomUUID().toString(), "-", "") + suffix;
         } else if(!fileName.contains(".")) {
             fileName = fileName + suffix;
         }
