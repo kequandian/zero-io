@@ -305,7 +305,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
     }
 
     @Override
-    public UploadResp uploadByForm(MultipartFile file, String filePath, String fileName, String module, String userId) {
+    public UploadResp uploadByForm(MultipartFile file, String filePath, String fileName, String module, String userId, Boolean useOriginName) {
         if(!StringUtils.startsWithIgnoreCase(filePath, "/")) {
             throw new BusinessException(BusinessCode.BadRequest,  "文件路径需要/开头");
         }
@@ -330,7 +330,9 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             suffix = realFileName.substring(realFileName.lastIndexOf("."));
         }
         if(StringUtils.isEmpty(fileName)) {
-            fileName = StringUtils.replace(UUID.randomUUID().toString(),"-","") + suffix;
+            fileName = StringUtils.replace(UUID.randomUUID().toString(), "-", "") + suffix;
+        }else if(useOriginName != null && useOriginName) {
+            fileName = realFileName;
         } else if(!fileName.contains(".")) {
             fileName = fileName + suffix;
         }

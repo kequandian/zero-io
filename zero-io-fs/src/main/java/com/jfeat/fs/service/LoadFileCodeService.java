@@ -55,9 +55,10 @@ public interface LoadFileCodeService {
      * @param fileName
      * @param module 接入的模块 可选
      * @param userId 用户标识 可选
+     * @param useOriginName 是否使用原始文件名
      * @return UploadResp
      */
-    UploadResp uploadByForm(MultipartFile file, String filePath, String fileName, String module, String userId);
+    UploadResp uploadByForm(MultipartFile file, String filePath, String fileName, String module, String userId, Boolean useOriginName);
 
     /**
      * 通用文本上传
