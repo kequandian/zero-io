@@ -111,9 +111,9 @@ public class FileServiceEndpoint {
                           @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
                           @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
                           @RequestParam(required = false) @ApiParam("功能模块 方便定位问题") String module,
-                          @RequestParam(required = false) @ApiParam("是否使用原文件名") Boolean useOriginName) {
+                          @RequestParam(required = false) @ApiParam("是否使用原文件名") Boolean useOriName) {
         try {
-            return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, "", useOriginName));
+            return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, "", useOriName));
         } catch (Exception e) {
             logger.error("upload err", e);
             return ErrorTip.create(BusinessCode.UploadFileError);
@@ -126,9 +126,9 @@ public class FileServiceEndpoint {
                             @RequestParam @ApiParam(value = "文件路径 /images/head/", required = true) String filePath,
                             @RequestParam(required = false) @ApiParam("文件名（例如：aa.jpg 没后缀服务端使用文件后缀）可选 为空使用uuid") String fileName,
                             @RequestParam(required = false) @ApiParam("功能模块 方便定位问题") String module,
-                            @RequestParam(required = false) @ApiParam("是否使用原文件名") Boolean useOriginName) {
+                            @RequestParam(required = false) @ApiParam("是否使用原文件名") Boolean useOriName) {
         try {
-            return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, "", useOriginName));
+            return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, "", useOriName));
         } catch (Exception e) {
             logger.error("upload err", e);
             return ErrorTip.create(BusinessCode.UploadFileError);

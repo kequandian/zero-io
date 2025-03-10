@@ -338,7 +338,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         }
 
         // 考虑存储数据库
-        logger.info("file upload  realFileName={} fileName:{} module:{} userId:{}", realFileName, fileName, module, userId);
+        logger.info("file upload  realFileName={} fileName:{} module:{} userId:{} useOriginName:{}", realFileName, fileName, module, userId, useOriginName);
         try {
             return upload(file.getInputStream(),bucketName,objectPath,fileName,file.getContentType());
         } catch (Exception e) {
@@ -404,7 +404,6 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             minioClient.removeObject(removeObjectArgs);
         } catch (Exception e) {
             logger.error("删除minio文件失败={}" , e.getMessage(), e);
-            throw new BusinessException(BusinessCode.GeneralIOError);
         }
         return true;
     }
