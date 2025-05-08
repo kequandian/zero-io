@@ -129,7 +129,11 @@ public class FileServiceEndpoint {
                             @RequestParam(required = false) @ApiParam("是否使用原文件名") Boolean useOriName) {
         try {
             return SuccessTip.create(loadFileCodeService.uploadByForm(file, filePath, fileName,module, "", useOriName));
-        } catch (Exception e) {
+        } catch (BusinessException e) {
+            logger.error("upload err", e);
+            return ErrorTip.create(e.getCode(), e.getMessage());
+        }
+        catch (Exception e) {
             logger.error("upload err", e);
             return ErrorTip.create(BusinessCode.UploadFileError);
         }
@@ -145,6 +149,9 @@ public class FileServiceEndpoint {
                             @RequestParam(required = true) @ApiParam("功能模块 方便定位问题") String module) {
         try {
             return SuccessTip.create(loadFileCodeService.uploadBytes(bytes, fileSuffix,contentType, filePath, fileName,module, ""));
+        } catch (BusinessException e) {
+            logger.error("upload err", e);
+            return ErrorTip.create(e.getCode(), e.getMessage());
         } catch (Exception e) {
             logger.error("upload err", e);
             return ErrorTip.create(BusinessCode.UploadFileError);
