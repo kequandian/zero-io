@@ -59,7 +59,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
     @Value("${io.minio.secret-key}")
     private String minioSecretKey;
 
-    private static MinioClient minioClient;
+    private static MinioClient minioClient = null;
 
     @PostConstruct
     public void init() {
@@ -69,6 +69,9 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
                     .endpoint(minioUrl)
                     .credentials(minioAccessKey, minioSecretKey)
                     .build();
+            if(minioClient == null) {
+                throw new BusinessException(BusinessCode.BadRequest,  "minio client 初始化失败");
+            }
             logger.info("init minio success");
         } catch (Exception e) {
             logger.error("init minio fail={}", e.getMessage());
@@ -263,6 +266,11 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             contentType = "application/octet-stream";
         }
         String object = objectPath + objectName;
+        if(minioClient == null) {
+            logger.info("minio client not init: bucketName= {}, objectPath = {}", bucketName, objectPath);
+            throw new BusinessException(BusinessCode.GeneralIOError, "minio client 未初始化");
+        }
+
         try {
             BucketExistsArgs existsArgs = BucketExistsArgs.builder().bucket(bucketName).build();
             boolean isExists = minioClient.bucketExists(existsArgs);
@@ -396,6 +404,11 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
 
         String bucketName = bucketAndObject[0];
         String objectPath = bucketAndObject[1];
+
+        if(minioClient == null) {
+            logger.info("minio client not init: bucketName= {}, objectPath = {}", bucketName, objectPath);
+            throw new BusinessException(BusinessCode.GeneralIOError, "minio client 未初始化");
+        }
         //根据objectName删除minio的数据
         try {
             RemoveObjectArgs removeObjectArgs = RemoveObjectArgs.builder().bucket(bucketName)

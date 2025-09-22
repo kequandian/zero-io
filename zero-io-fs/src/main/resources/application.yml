@@ -1,6 +1,10 @@
 server:
   port: 8080
 
+spring:
+  profiles:
+    active: dev
+
 io:
   fileUploadPath: webapps/images/avatar
   file-host: images/avatar
@@ -12,11 +16,6 @@ io:
     access-key: "admin"
     secret-key: "jfeat.com.24"
 
-spring:
-  profiles:
-    active: dev
-
 ---
-spring:
-  profiles: dev
+
 

@@ -6,7 +6,6 @@ import com.jfeat.crud.base.tips.ErrorTip;
 import com.jfeat.crud.base.tips.SuccessTip;
 import com.jfeat.crud.base.tips.Tip;
 import com.jfeat.crud.base.util.StrKit;
-import com.jfeat.fs.dto.req.UploadByTextReq;
 import com.jfeat.fs.dto.resp.UploadResp;
 import com.jfeat.fs.properties.FSProperties;
 import com.jfeat.fs.service.LoadFileCodeService;
@@ -16,7 +15,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
