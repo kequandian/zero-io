@@ -41,6 +41,7 @@ public class FrontPage extends Model<FrontPage> {
     private String title;
 
     @ApiModelProperty(value = "页面描述")
+    @TableField(exist = false)
     private String pageDescript;
 
     @ApiModelProperty(value = "页面配置json数据")

@@ -1,6 +1,5 @@
 package com.jfeat.module.frontPage.services.gen.persistence.dao;
 
-import com.jfeat.module.frontPage.services.gen.crud.model.FrontPageModuleInfoModel;
 import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
