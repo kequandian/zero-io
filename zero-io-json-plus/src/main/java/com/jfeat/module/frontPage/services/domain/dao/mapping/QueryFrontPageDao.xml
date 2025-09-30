@@ -6,7 +6,7 @@
         t_front_page.page_name AS pageName,
         t_front_page.page_id AS pageId,
         t_front_page.title,
-        t_front_page.page_descrip AS pageDescrip,
+        t_front_page.page_descript AS pageDescript,
         t_front_page.content, t_front_page.appid,
         t_front_page.json_name AS jsonName,
         t_front_page.json_path AS jsonPath,
@@ -59,8 +59,8 @@
         </if>
 
 
-        <if test="record.pageDescrip != null and record.pageDescrip!= ''">
-            AND t_front_page.page_descrip LIKE CONCAT('%',#{record.pageDescrip},'%')
+        <if test="record.pageDescript != null and record.pageDescript!= ''">
+            AND t_front_page.page_descript LIKE CONCAT('%',#{record.pageDescript},'%')
         </if>
         <if test="record.content != null and record.content!= ''">
             AND t_front_page.content LIKE CONCAT('%',#{record.content},'%')

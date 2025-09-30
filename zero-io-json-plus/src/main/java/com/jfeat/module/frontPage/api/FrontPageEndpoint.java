@@ -98,7 +98,7 @@ public class FrontPageEndpoint {
             @ApiImplicitParam(name = "id", dataType = "Long"),
             @ApiImplicitParam(name = "count", dataType = "String"),
             @ApiImplicitParam(name = "title", dataType = "String"),
-            @ApiImplicitParam(name = "pageDescrip", dataType = "String"),
+            @ApiImplicitParam(name = "pageDescript", dataType = "String"),
             @ApiImplicitParam(name = "content", dataType = "String"),
             @ApiImplicitParam(name = "appid", dataType = "String"),
             @ApiImplicitParam(name = "jsonName", dataType = "String"),
@@ -121,7 +121,7 @@ public class FrontPageEndpoint {
 
                                   @RequestParam(name = "title", required = false) String title,
 
-                                  @RequestParam(name = "pageDescrip", required = false) String pageDescrip,
+                                  @RequestParam(name = "pageDescript", required = false) String pageDescript,
 
                                   @RequestParam(name = "content", required = false) String content,
 
@@ -165,7 +165,7 @@ public class FrontPageEndpoint {
         FrontPageRecord record = new FrontPageRecord();
         record.setPageId(pageId);
         record.setTitle(title);
-        record.setPageDescrip(pageDescrip);
+        record.setPageDescript(pageDescript);
         record.setContent(content);
         record.setAppid(appid);
         record.setJsonName(jsonName);

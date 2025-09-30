@@ -1,19 +1,14 @@
 package com.jfeat.am.module.ioJson.services.domain.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jfeat.am.module.ioJson.services.domain.service.MockJsonService;
-import com.jfeat.crud.base.exception.BusinessCode;
-import com.jfeat.crud.base.exception.BusinessException;
 import com.jfeat.module.frontPage.services.domain.service.FrontPageModuleInfoService;
 import com.jfeat.module.frontPage.services.gen.persistence.dao.FrontPageMapper;
 import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPage;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.*;
 
 /**
  * <p>
@@ -26,19 +21,18 @@ import java.io.*;
 
 @Service("mockJsonService")
 public class MockJsonServiceImpl implements MockJsonService {
-
     /**
      * 返回所有基于 appid 的配置列表
      * app.map [  {"appid": "", "appkey": ""}  ]
      * 提供API 设置当前 appid,  api由appkey授权,  一个app一个保存目录, 每个目录一个 site.map，  {"id": "2323", "filename":"个人中心.json"}
      */
-    private static final String JSON_MOCK_DIR = "mock";
+//    private static final String JSON_MOCK_DIR = "pages";
 
-    private static String dir = JSON_MOCK_DIR;
+//    private static String dir = JSON_MOCK_DIR;
     // private static String mockMapPath = "mock/mock.properties";
 
-    @Resource
-    MockJsonService mockJsonService;
+//    @Resource
+//    MockJsonService mockJsonService;
 
     @Resource
     FrontPageMapper frontPageMapper;
@@ -62,47 +56,53 @@ public class MockJsonServiceImpl implements MockJsonService {
     public JSONObject readJsonFile(String name, String tag) {
         // checkAppMap();
 
-        //如果有tag，则用tag查出来的id作为
-        if(tag != null && !tag.equals("")){
-            QueryWrapper<FrontPage> qw = new QueryWrapper<>();
-            qw.eq("tag",tag);
-            FrontPage frontPage = frontPageMapper.selectOne(qw);
-            if(frontPage == null){throw new BusinessException(BusinessCode.BadRequest,"tag："+tag+" 对应的页面配置不存在");}
-            name  =  frontPage.getPageId();
-        }
+        QueryWrapper<FrontPage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(FrontPage.PAGE_ID, name);
+        FrontPage frontPage = frontPageMapper.selectOne(queryWrapper);
+        String content = frontPage.getContent();
+        JSONObject json = JSONObject.parseObject(content);
 
-        JSONObject json = new JSONObject();
+//        //如果有tag，则用tag查出来的id作为
+//        if(tag != null && !tag.equals("")){
+//            QueryWrapper<FrontPage> qw = new QueryWrapper<>();
+//            qw.eq("tag",tag);
+//            FrontPage frontPage = frontPageMapper.selectOne(qw);
+//            if(frontPage == null){throw new BusinessException(BusinessCode.BadRequest,"tag："+tag+" 对应的页面配置不存在");}
+//            name  =  frontPage.getPageId();
+//        }
 
-        // Map<String, String> idMap = getIdMap();
-        // String fileName = idMap.get(id.toString());
-        String fileName = getMockFileName(name);
-        if (fileName == null || fileName.equals("")) {
-            throw new BusinessException(BusinessCode.BadRequest, "该id对应的数据不存在");
-        } else {
-
-            File jsonFile = new File(dir + File.separator + fileName);
-            FileReader fileReader = null;
-            try {
-                fileReader = new FileReader(jsonFile);
-                Reader reader = new InputStreamReader(new FileInputStream(jsonFile), "utf-8");
-                int ch = 0;
-                StringBuffer sb = new StringBuffer();
-                while ((ch = reader.read()) != -1) {
-                    sb.append((char) ch);
-                }
-                fileReader.close();
-                reader.close();
-
-                json = (JSONObject) JSONObject.parse(sb.toString());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+//        JSONObject json = new JSONObject();
+//
+//        // Map<String, String> idMap = getIdMap();
+//        // String fileName = idMap.get(id.toString());
+//        String fileName = getMockFileName(name);
+//        if (fileName == null || fileName.equals("")) {
+//            throw new BusinessException(BusinessCode.BadRequest, "该id对应的数据不存在");
+//        } else {
+//
+//            File jsonFile = new File(dir + File.separator + fileName);
+//            FileReader fileReader = null;
+//            try {
+//                fileReader = new FileReader(jsonFile);
+//                Reader reader = new InputStreamReader(new FileInputStream(jsonFile), "utf-8");
+//                int ch = 0;
+//                StringBuffer sb = new StringBuffer();
+//                while ((ch = reader.read()) != -1) {
+//                    sb.append((char) ch);
+//                }
+//                fileReader.close();
+//                reader.close();
+//
+//                json = (JSONObject) JSONObject.parse(sb.toString());
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
         return json;
     }
 
@@ -119,7 +119,7 @@ public class MockJsonServiceImpl implements MockJsonService {
         // Map<String, String> idMap = getIdMap();
         //已有id处理
         // String savefileName = idMap.get(id.toString());
-        String fileName = getMockFileName(name);
+//        String fileName = getMockFileName(name);
         // String fileName;
         // if (savefileName != null && !"".equals(savefileName)) {
         //     fileName = savefileName;
@@ -127,47 +127,47 @@ public class MockJsonServiceImpl implements MockJsonService {
         //     fileName = IdWorker.getIdStr() + ".json";
         // }
 
-//        写入数据库
-        saveJsonToDataBase(json,name,tag);
-        i++;
 
-        String content = JSON.toJSONString(json, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteDateUseDateFormat);
+        //写入数据库
+        i+= saveJsonToDataBase(json,name,tag);
 
+        // 无需写入文件
+        // @when 2025-09
 
-        File file = new File(dir + File.separator + fileName);
-        try {
-            if (file.exists()) {
-                file.delete();
-            }
-            Writer write = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-            write.write(content);
-            write.flush();
-            write.close();
-
-            i++;
-            // FileUtil.writeProperties(id.toString(), fileName, FileUtil.getFile(dir + File.separator
-            //         , dir + File.separator + "appSite.properties"));
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+//        String content = JSON.toJSONString(json, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+//                SerializerFeature.WriteDateUseDateFormat);
+//
+//        File file = new File(dir + File.separator + fileName);
+//        try {
+//            if (file.exists()) {
+//                file.delete();
+//            }
+//            Writer write = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+//            write.write(content);
+//            write.flush();
+//            write.close();
+//
+//            // FileUtil.writeProperties(id.toString(), fileName, FileUtil.getFile(dir + File.separator
+//            //         , dir + File.separator + "appSite.properties"));
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         return i;
     }
 
 
-    private String getMockFileName(String name){
-        if(name.endsWith(".json")){
-            return name;
-        }
-        return name.concat(".json");
-    }
+//    private String getMockFileName(String name){
+//        if(name.endsWith(".json")){
+//            return name;
+//        }
+//        return name.concat(".json");
+//    }
 
     // //检查appId是否已记录进配置文件
     // void checkAppMap() {
@@ -187,14 +187,13 @@ public class MockJsonServiceImpl implements MockJsonService {
     //     return FileUtil.readProperties(dir + File.separator + appId, dir + File.separator + appId + File.separator + "appSite.properties");
     // }
 
-
     @Override
     public Integer saveJsonToDataBase(JSONObject json, String name, String tag) {
 
         Integer affect = 0;
 
 //        String jsonFileName = idMap.get(String.valueOf(id));
-        String jsonPath = String.join(JSON_MOCK_DIR, File.separator, name, ".json");
+//        String jsonPath = String.join(JSON_MOCK_DIR, File.separator, name, ".json");
         String title = "";
         if (json!=null&&json.get("title")!=null){
             title = json.get("title").toString();
@@ -205,7 +204,7 @@ public class MockJsonServiceImpl implements MockJsonService {
         record.setTitle(title);
         record.setContent(json.toJSONString());
         record.setJsonName(name);
-        record.setJsonPath(jsonPath);
+//        record.setJsonPath(jsonPath);
         record.setTag(tag);
 
 //        更新type和moduleName

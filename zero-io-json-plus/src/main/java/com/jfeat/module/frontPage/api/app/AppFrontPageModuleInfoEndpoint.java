@@ -10,7 +10,6 @@ import com.jfeat.module.frontPage.services.domain.dao.QueryFrontPageModuleInfoDa
 import com.jfeat.module.frontPage.services.domain.model.FrontPageModuleInfoRecord;
 import com.jfeat.module.frontPage.services.domain.service.FrontPageModuleInfoService;
 import com.jfeat.module.frontPage.services.gen.crud.model.FrontPageModuleInfoModel;
-import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPageModuleInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

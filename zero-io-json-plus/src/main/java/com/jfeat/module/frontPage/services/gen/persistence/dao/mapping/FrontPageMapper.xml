@@ -7,7 +7,7 @@
         <id column="id" property="id" />
         <result column="page_id" property="pageId" />
         <result column="title" property="title" />
-        <result column="page_descrip" property="pageDescrip" />
+        <!-- <result column="page_descript" property="pageDescript" /> -->
         <result column="content" property="content" />
         <result column="appid" property="appid" />
         <result column="json_name" property="jsonName" />
@@ -18,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, page_id, title, page_descrip, content, appid, json_name, json_path, create_time, update_time
+        id, page_id, title, content, appid, json_name, json_path, create_time, update_time
     </sql>
 
 

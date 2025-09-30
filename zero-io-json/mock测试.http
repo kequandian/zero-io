@@ -67,3 +67,23 @@ Content-Type: application/json
 
 
 
+
+// 代码中未启用：GET {{endpoint}}/mock （MockEndpoint 中该方法被注释）
+// 代码中未启用：GET  {{endpoint}}/mock/{{dir}} （MockEndpoint 中该方法被注释）
+GET {{endpoint}}/mock/{{mockName}}
+
+### 在默认目录下 新增 名字为 {{mockName}} 的 mock数据
+POST {{endpoint}}/mock/{{mockName}}
+Content-Type: application/json
+
+{
+  "version": "1",
+  "name": "demo",
+  "title": "演示-默认目录",
+  "response": {
+    "data": "data"
+  }
+}
+
+
+

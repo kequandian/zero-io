@@ -41,7 +41,7 @@ public class FrontPage extends Model<FrontPage> {
     private String title;
 
     @ApiModelProperty(value = "页面描述")
-    private String pageDescrip;
+    private String pageDescript;
 
     @ApiModelProperty(value = "页面配置json数据")
     private String content;
@@ -164,12 +164,12 @@ public class FrontPage extends Model<FrontPage> {
         return this;
     }
 
-    public String getPageDescrip() {
-        return pageDescrip;
+    public String getPageDescript() {
+        return pageDescript;
     }
 
-    public FrontPage setPageDescrip(String pageDescrip) {
-        this.pageDescrip = pageDescrip;
+    public FrontPage setPageDescript(String pageDescript) {
+        this.pageDescript = pageDescript;
         return this;
     }
 
@@ -235,7 +235,7 @@ public class FrontPage extends Model<FrontPage> {
 
     public static final String TITLE = "title";
 
-    public static final String PAGE_DESCRIP = "page_descrip";
+    public static final String PAGE_DESCRIP = "page_descript";
 
     public static final String CONTENT = "content";
 
@@ -266,7 +266,7 @@ public class FrontPage extends Model<FrontPage> {
                 "id=" + id +
                 ", pageId=" + pageId +
                 ", title=" + title +
-                ", pageDescrip=" + pageDescrip +
+                ", pageDescript=" + pageDescript +
                 ", content=" + content +
                 ", appid=" + appid +
                 ", jsonName=" + jsonName +

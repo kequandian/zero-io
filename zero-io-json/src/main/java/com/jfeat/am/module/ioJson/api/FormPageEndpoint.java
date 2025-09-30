@@ -2,7 +2,6 @@ package com.jfeat.am.module.ioJson.api;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jfeat.am.module.ioJson.services.domain.service.MockJsonService;
 import com.jfeat.crud.base.exception.BusinessCode;
@@ -12,7 +11,6 @@ import com.jfeat.crud.base.tips.Tip;
 import com.jfeat.module.frontPage.services.domain.dao.QueryFrontPageDao;
 import com.jfeat.module.frontPage.services.domain.model.FrontPageRecord;
 import com.jfeat.module.frontPage.services.gen.persistence.dao.FrontPageMapper;
-import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -36,7 +33,7 @@ import java.util.Map;
 
 @Api("表单用")
 @RequestMapping("/form")
-public class MockFormEndpoint {
+public class FormPageEndpoint {
 
     @Resource
     MockJsonService mockJsonService;
@@ -50,15 +47,15 @@ public class MockFormEndpoint {
 
     @GetMapping("")
     @ApiOperation(value = "查看表单Json")
-    public Tip getJson(@Param(value = "id") Long id) {
+    public Tip getFormJson(@Param(value = "id") String id) {
 
-        QueryWrapper<FrontPage> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(FrontPage.PAGE_ID, id);
-        FrontPage frontPage = frontPageMapper.selectOne(queryWrapper);
-        String content = frontPage.getContent();
-        JSONObject json = JSONObject.parseObject(content);
-        return SuccessTip.create(json);
-//        return SuccessTip.create(mockJsonService.readJsonFile(id));
+//        QueryWrapper<FrontPage> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq(FrontPage.PAGE_ID, id);
+//        FrontPage frontPage = frontPageMapper.selectOne(queryWrapper);
+//        String content = frontPage.getContent();
+//        JSONObject json = JSONObject.parseObject(content);
+//        return SuccessTip.create(json);
+        return SuccessTip.create(mockJsonService.readJsonFile(id));
     }
 
     // @GetMapping("/byTag/{tag}")
@@ -67,14 +64,14 @@ public class MockFormEndpoint {
     //     return SuccessTip.create(mockJsonService.readJsonFile(null, tag));
     // }
 
-    @PostMapping("/{name}")
-    @ApiOperation(value = "增加Json")
-    public Tip addJson(@PathVariable String name, @RequestBody JSONObject json) {
+    @PostMapping("/{id}")
+    @ApiOperation(value = "保存页面配置")
+    public Tip addFormJson(@PathVariable String id, @RequestBody JSONObject json) {
         // String originAppid = mockJsonService.getAppId();
         // if (appid != null) {
         //     mockJsonService.setAppId(appid);
         // }
-        Integer integer = mockJsonService.saveJsonToFile(json, name);
+        Integer integer = mockJsonService.saveJsonToFile(json, id);
         // mockJsonService.setAppId(originAppid);
         return SuccessTip.create(integer);
     }
@@ -137,7 +134,7 @@ public class MockFormEndpoint {
 
                            @RequestParam(name = "title", required = false) String title,
 
-                           @RequestParam(name = "pageDescrip", required = false) String pageDescrip,
+                           @RequestParam(name = "pageDescript", required = false) String pageDescript,
 
                            @RequestParam(name = "content", required = false) String content,
 
@@ -172,7 +169,7 @@ public class MockFormEndpoint {
         FrontPageRecord record = new FrontPageRecord();
         record.setPageId(pageId);
         record.setTitle(title);
-        record.setPageDescrip(pageDescrip);
+        record.setPageDescript(pageDescript);
         record.setContent(content);
         // record.setAppid(appid);
         record.setJsonName(jsonName);

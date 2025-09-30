@@ -50,7 +50,7 @@ Put  {{endpoint}}/api/u/frontPage/frontPage/frontPages/102
         "id": "102",
         "jsonName": "1556929177066696705.json",
         "jsonPath": "jsonMock/DEFAULT/1556929177066696705.json",
-        "pageDescrip": null,
+        "pageDescript": null,
         "pageId": "275478",
         "tagIds": null,
         "tags": null,

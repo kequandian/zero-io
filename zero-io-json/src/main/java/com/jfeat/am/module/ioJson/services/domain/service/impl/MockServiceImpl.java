@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 // import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.jfeat.am.module.ioJson.services.domain.service.MockService;
-import com.jfeat.am.module.ioJson.services.domain.util.FileUtil;
+// import com.jfeat.am.module.ioJson.services.domain.util.FileUtil;
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
 import org.springframework.stereotype.Service;
@@ -72,6 +72,12 @@ public class MockServiceImpl implements MockService {
         String content = JSON.toJSONString(json, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
                 SerializerFeature.WriteDateUseDateFormat);
 
+        // 确保目录存在
+        File directory = new File(dir + File.separator + customDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
         File file = new File(dir + File.separator + customDir + File.separator + fileName);
         try {
             if (file.exists()) {
@@ -83,8 +89,9 @@ public class MockServiceImpl implements MockService {
             write.close();
 
             i++;
-            FileUtil.writeProperties(name, fileName, FileUtil.getFile(dir + File.separator + customDir
-                    , dir + File.separator + customDir + File.separator + "site.properties"));
+            // 移除对 FileUtil 的依赖
+            // FileUtil.writeProperties(name, fileName, FileUtil.getFile(dir + File.separator + customDir
+            //         , dir + File.separator + customDir + File.separator + "site.properties"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

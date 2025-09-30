@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * <p>
@@ -23,7 +22,7 @@ import java.util.Map;
 @RestController
 @Api("mock数据(可以定义子目录)")
 @RequestMapping("/mock")
-public class MockDataEndpoint {
+public class MockEndpoint {
 
     @Resource
     MockService mockService;

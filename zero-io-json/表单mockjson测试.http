@@ -1,10 +1,10 @@
 @endpoint = http://localhost:8080
 //@endpoint = https://house.cloud.smallsaas.cn
 
-### 获取页面信息
+### 获取页面信息（已存在）
 GET {{endpoint}}/form?id=66666
 
-### 提交页面信息
+### 提交页面信息（已存在）
 POST {{endpoint}}/form/66666
 Content-Type: application/json
 
@@ -52,6 +52,24 @@ Content-Type: application/json
         }
     }
 }
+
+
+
+
+### 新增：增加 Json 带 tag
+POST {{endpoint}}/form/demoName/demoTag
+Content-Type: application/json
+
+{
+  "version": "1",
+  "title": "演示-带tag",
+  "response": {
+    "data": "data"
+  }
+}
+
+### 新增：分页查询所有页面
+GET {{endpoint}}/form/forms?pageNum=1&pageSize=10&tag=&search=&pageId=&title=&pageDescript=&content=&jsonName=&createTime=&updateTime=&orderBy=&sort=
 
 
 
