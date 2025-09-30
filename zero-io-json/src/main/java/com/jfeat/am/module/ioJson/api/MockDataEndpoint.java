@@ -21,20 +21,18 @@ import java.util.Map;
  * @since 2022-05-19
  */
 @RestController
-
-@Api("mock data测试用")
-@RequestMapping("/data")
+@Api("mock数据(可以定义子目录)")
+@RequestMapping("/mock")
 public class MockDataEndpoint {
 
     @Resource
     MockService mockService;
 
     @GetMapping("/{name}")
-    @ApiOperation(value = "查看 指定文件夹下的mock数据")
+    @ApiOperation(value = "查看mock数据")
     public Tip getMock( @PathVariable(value = "name") String name) {
         JSONObject jsonObject = mockService.readJsonFile(name, null);
         return SuccessTip.create(jsonObject);
-
     }
 
     @PostMapping("/{name}")
@@ -42,39 +40,33 @@ public class MockDataEndpoint {
     public Tip createMock(@RequestBody JSONObject json, @PathVariable(value = "name") String name) {
         Integer integer = mockService.saveJsonToFile(json, name, null);
         return SuccessTip.create(integer);
-
     }
-
-
 
     @GetMapping("/{dir}/{name}")
     @ApiOperation(value = "查看 指定文件夹下的mock数据")
-    public Tip getMock(@PathVariable(value = "dir") String dir, @PathVariable(value = "name") String name) {
+    public Tip getDirMock(@PathVariable(value = "dir") String dir, @PathVariable(value = "name") String name) {
         JSONObject jsonObject = mockService.readJsonFile(name, dir);
         return SuccessTip.create(jsonObject);
-
     }
 
     @PostMapping("/{dir}/{name}")
-    @ApiOperation(value = "新增mock数据")
-    public Tip createMock(@RequestBody JSONObject json, @PathVariable(value = "dir") String dir, @PathVariable(value = "name") String name) {
+    @ApiOperation(value = "新增 指定文件夹下的mock数据")
+    public Tip createDirMock(@RequestBody JSONObject json, @PathVariable(value = "dir") String dir, @PathVariable(value = "name") String name) {
         Integer integer = mockService.saveJsonToFile(json, name, dir);
         return SuccessTip.create(integer);
-
     }
 
-    @GetMapping("/{dir}")
-    @ApiOperation(value = "查看mock列表")
-    public Tip getMockList(@PathVariable(value = "dir") String dir) {
-        Map<String, String> nameMap = mockService.getNameMap(dir);
-        return SuccessTip.create(nameMap);
-    }
+    // @GetMapping("/{dir}")
+    // @ApiOperation(value = "查看mock列表")
+    // public Tip getMockList(@PathVariable(value = "dir") String dir) {
+    //     Map<String, String> nameMap = mockService.getJsonNameMap(dir);
+    //     return SuccessTip.create(nameMap);
+    // }
 
-
-    @GetMapping("")
-    @ApiOperation(value = "查看mock文件夹列表")
-    public Tip getMockDirList() {
-        Map<String, String> dirMap = mockService.getDirIdMap();
-        return SuccessTip.create(dirMap);
-    }
+    // @GetMapping("")
+    // @ApiOperation(value = "查看mock文件夹列表")
+    // public Tip getMockDirList() {
+    //     Map<String, String> dirMap = mockService.getDirIdMap();
+    //     return SuccessTip.create(dirMap);
+    // }
 }

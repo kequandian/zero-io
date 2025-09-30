@@ -24,7 +24,6 @@ public class FileUtil {
         return map;
     }
 
-
     public static Map<String, String> readProperties(String dir, String filePath) {
         Map<String, String> map = new HashMap<String, String>();
         InputStream in = null;
@@ -45,22 +44,6 @@ public class FileUtil {
         }
         return map;
     }
-
-
-
-/*    public static File getFile(String filePath){
-        File file = new File(filePath);
-        File fileDir = new File(dir + File.separator + appId);
-        if(!file.exists()){
-            fileDir.mkdirs();
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file;
-    }*/
 
     public static void writeProperties(String proKey, String proValue, File file) {
         //Map<String, String> idMap = getIdMap();
@@ -95,11 +78,10 @@ public class FileUtil {
         }
     }
 
-
     public static File getFile(String dir, String filePath) {
         File file = new File(filePath);
-        File fileDir = new File(dir);
         if (!file.exists()) {
+            File fileDir = new File(dir);
             fileDir.mkdirs();
             try {
                 file.createNewFile();
@@ -108,7 +90,5 @@ public class FileUtil {
             }
         }
         return file;
-
     }
-
 }

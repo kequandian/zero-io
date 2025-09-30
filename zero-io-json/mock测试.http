@@ -1,6 +1,5 @@
-@localHostEndpoint = http://localhost:8080
-@reEndpoint = https://house.cloud.smallsaas.cn
-@endpoint = {{localHostEndpoint}}
+@endpoint = http://localhost:8080
+//@endpoint = https://house.cloud.smallsaas.cn
 
 ### 文件夹名字 自定义
 @dir = pathto
