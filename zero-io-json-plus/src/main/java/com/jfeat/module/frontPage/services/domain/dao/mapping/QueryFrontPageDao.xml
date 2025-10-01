@@ -6,14 +6,14 @@
         t_front_page.page_name AS pageName,
         t_front_page.page_id AS pageId,
         t_front_page.title,
-        t_front_page.page_descript AS pageDescript,
+        t_front_page.notes,
         t_front_page.content, t_front_page.appid,
         t_front_page.json_name AS jsonName,
         t_front_page.json_path AS jsonPath,
         t_front_page.template_status AS templateStatus,
         t_front_page.create_time AS createTime,
         t_front_page.update_time AS updateTime,
-        t_front_page.tag as tag,
+        t_front_page.tag,
         t_front_page.module_name as moduleName,
         t_front_page.type as 'type'
     </sql>
@@ -59,8 +59,8 @@
         </if>
 
 
-        <if test="record.pageDescript != null and record.pageDescript!= ''">
-            AND t_front_page.page_descript LIKE CONCAT('%',#{record.pageDescript},'%')
+        <if test="record.notes != null and record.notes!= ''">
+            AND t_front_page.notes LIKE CONCAT('%',#{record.notes},'%')
         </if>
         <if test="record.content != null and record.content!= ''">
             AND t_front_page.content LIKE CONCAT('%',#{record.content},'%')
@@ -107,13 +107,12 @@
 
     </select>
 
-
-    <select id="findFrontPagePageByType" >
+    <!-- <select id="findFrontPagePageByType" >
         SELECT
         <include refid="Base_Column_List"/>
         FROM t_front_page
         where json_contains(t_front_page.content,CONCAT('"',#{type},'"'))
         ORDER BY t_front_page.create_time DESC,t_front_page.update_time DESC
+    </select> -->
 
-    </select>
 </mapper>

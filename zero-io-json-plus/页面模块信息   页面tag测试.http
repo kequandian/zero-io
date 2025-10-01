@@ -4,13 +4,13 @@
 
 
 ### 手动同步
-PUT {{endpoint}}/api/crud/frontPageModuleInfo/synchronizationData?moduleType=autolist
+PUT {{endpoint}}/api/adm/frontPageModuleInfo/synchronizationData?moduleType=autolist
 
 
 ### 分页
 # moduleType 模组类型
 # synchronization为false表示不同步（同步：从动态页面配置表获取数据同步到临时表） 可选 默认为true
-GET  {{endpoint}}/api/crud/frontPageModuleInfo?synchronization=true&moduleType=autolist
+GET  {{endpoint}}/api/adm/frontPageModuleInfo?synchronization=true&moduleType=autolist
 
 
 ### 分页 终端用户接口
@@ -27,18 +27,18 @@ GET  {{endpoint}}/api/u/frontPageModuleInfo?synchronization=true&moduleType=auto
 
 
 
-GET  {{endpoint}}/api/u/frontPage/frontPage/frontPages/102
+GET  {{endpoint}}/api/u/frontPage/frontPages/102
 
 
 
 ### 动态页面 列表
 
-GET  {{endpoint}}/api/u/frontPage/frontPage/frontPages?tagName=房屋管理
+GET  {{endpoint}}/api/u/frontPage/frontPages?tagName=房屋管理
 
 ### 动态页面 tag测试
 
 
-Put  {{endpoint}}/api/u/frontPage/frontPage/frontPages/102
+PUT  {{endpoint}}/api/u/frontPage/frontPages/102
 
  {
         "appid": "DEFAULT",
@@ -50,7 +50,7 @@ Put  {{endpoint}}/api/u/frontPage/frontPage/frontPages/102
         "id": "102",
         "jsonName": "1556929177066696705.json",
         "jsonPath": "jsonMock/DEFAULT/1556929177066696705.json",
-        "pageDescript": null,
+        "notes": null,
         "pageId": "275478",
         "tagIds": null,
         "tags": null,

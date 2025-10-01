@@ -37,7 +37,7 @@ import java.util.List;
  */
 @RestController
 @Api("FrontPage")
-@RequestMapping("/api/crud/frontPage/frontPage/frontPages")
+@RequestMapping("/api/adm/frontPage/frontPages")
 public class FrontPageEndpoint {
 
     @Resource
@@ -98,7 +98,7 @@ public class FrontPageEndpoint {
             @ApiImplicitParam(name = "id", dataType = "Long"),
             @ApiImplicitParam(name = "count", dataType = "String"),
             @ApiImplicitParam(name = "title", dataType = "String"),
-            @ApiImplicitParam(name = "pageDescript", dataType = "String"),
+            @ApiImplicitParam(name = "notes", dataType = "String"),
             @ApiImplicitParam(name = "content", dataType = "String"),
             @ApiImplicitParam(name = "appid", dataType = "String"),
             @ApiImplicitParam(name = "jsonName", dataType = "String"),
@@ -121,7 +121,7 @@ public class FrontPageEndpoint {
 
                                   @RequestParam(name = "title", required = false) String title,
 
-                                  @RequestParam(name = "pageDescript", required = false) String pageDescript,
+                                  @RequestParam(name = "notes", required = false) String notes,
 
                                   @RequestParam(name = "content", required = false) String content,
 
@@ -153,8 +153,6 @@ public class FrontPageEndpoint {
         if (tagName!=null){
             tagName = URLDecoder.decode(tagName);
         }
-        System.out.println("================");
-        System.out.println(tagName);
         if (tagName.equals("全部")){
             tagName = "";
         }
@@ -165,7 +163,7 @@ public class FrontPageEndpoint {
         FrontPageRecord record = new FrontPageRecord();
         record.setPageId(pageId);
         record.setTitle(title);
-        record.setPageDescript(pageDescript);
+        record.setnotes(notes);
         record.setContent(content);
         record.setAppid(appid);
         record.setJsonName(jsonName);

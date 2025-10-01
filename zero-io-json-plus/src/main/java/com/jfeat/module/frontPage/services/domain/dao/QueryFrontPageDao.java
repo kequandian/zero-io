@@ -27,11 +27,14 @@ public interface QueryFrontPageDao extends QueryMasterDao<FrontPage> {
                                             @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
 
-    @SQLTag("FrontPage")
-    List<FrontPageRecord> findFrontPagePageByType(Page<FrontPageRecord> page, @Param("record") FrontPageRecord record,
-                                            @Param("type") String type,
-                                            @Param("search") String search, @Param("orderBy") String orderBy,
-                                            @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+    /**
+     * 注释原因：依据JSON内容搜索，没有必要
+     */
+    // @SQLTag("FrontPage")
+    // List<FrontPageRecord> findFrontPagePageByType(Page<FrontPageRecord> page, @Param("record") FrontPageRecord record,
+    //                                         @Param("type") String type,
+    //                                         @Param("search") String search, @Param("orderBy") String orderBy,
+    //                                         @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
     /*
      * Query entity model for details

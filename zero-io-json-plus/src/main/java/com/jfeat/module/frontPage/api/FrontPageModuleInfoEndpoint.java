@@ -37,7 +37,7 @@ import java.util.List;
 @RestController
 
 @Api("页面模块")
-@RequestMapping("/api/crud/frontPageModuleInfo")
+@RequestMapping("/api/adm/frontPageModuleInfo")
 public class FrontPageModuleInfoEndpoint {
 
     @Resource

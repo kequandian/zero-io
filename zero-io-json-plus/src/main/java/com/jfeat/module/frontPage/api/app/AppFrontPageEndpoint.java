@@ -37,7 +37,7 @@ import java.util.List;
  */
 @RestController
 @Api("FrontPage")
-@RequestMapping("/api/u/frontPage/frontPage/frontPages")
+@RequestMapping("/api/u/frontPage/frontPages")
 public class AppFrontPageEndpoint {
 
     @Resource
@@ -91,7 +91,7 @@ public class AppFrontPageEndpoint {
             @ApiImplicitParam(name = "id", dataType = "Long"),
             @ApiImplicitParam(name = "count", dataType = "String"),
             @ApiImplicitParam(name = "title", dataType = "String"),
-            @ApiImplicitParam(name = "pageDescript", dataType = "String"),
+            @ApiImplicitParam(name = "notes", dataType = "String"),
             @ApiImplicitParam(name = "content", dataType = "String"),
             @ApiImplicitParam(name = "appid", dataType = "String"),
             @ApiImplicitParam(name = "jsonName", dataType = "String"),
@@ -114,7 +114,7 @@ public class AppFrontPageEndpoint {
 
                                   @RequestParam(name = "title", required = false) String title,
 
-                                  @RequestParam(name = "pageDescript", required = false) String pageDescript,
+                                  @RequestParam(name = "notes", required = false) String notes,
 
                                   @RequestParam(name = "content", required = false) String content,
 
@@ -153,7 +153,7 @@ public class AppFrontPageEndpoint {
         FrontPageRecord record = new FrontPageRecord();
         record.setPageId(pageId);
         record.setTitle(title);
-        record.setPageDescript(pageDescript);
+        record.setnotes(notes);
         record.setContent(content);
         record.setAppid(appid);
         record.setJsonName(jsonName);
@@ -187,7 +187,7 @@ public class AppFrontPageEndpoint {
 //
 //                               @RequestParam(name = "title", required = false) String title,
 //
-//                               @RequestParam(name = "pageDescript", required = false) String pageDescript,
+//                               @RequestParam(name = "notes", required = false) String notes,
 //
 //                               @RequestParam(name = "content", required = false) String content,
 //
@@ -209,7 +209,7 @@ public class AppFrontPageEndpoint {
 //        FrontPageRecord record = new FrontPageRecord();
 //        record.setPageId(pageId);
 //        record.setTitle(title);
-//        record.setPageDescrip(pageDescript);
+//        record.setPageDescrip(notes);
 //        record.setContent(content);
 //        record.setAppid(appid);
 //        record.setJsonName(jsonName);

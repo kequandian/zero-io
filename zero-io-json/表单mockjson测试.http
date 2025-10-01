@@ -69,7 +69,7 @@ Content-Type: application/json
 }
 
 ### 新增：分页查询所有页面
-GET {{endpoint}}/form/forms?pageNum=1&pageSize=10&tag=&search=&pageId=&title=&pageDescript=&content=&jsonName=&createTime=&updateTime=&orderBy=&sort=
+GET {{endpoint}}/form/forms?pageNum=1&pageSize=10&tag=&search=&pageId=&title=&notes=&content=&jsonName=&createTime=&updateTime=&orderBy=&sort=
 
 
 
