@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import java.util.Date;
 
+import org.mapstruct.util.Experimental;
+
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
@@ -41,6 +43,7 @@ public class FrontPage extends Model<FrontPage> {
     private String title;
 
     @ApiModelProperty(value = "页面描述")
+    @TableField(exist = false)
     private String notes;
 
     @ApiModelProperty(value = "页面配置json数据")

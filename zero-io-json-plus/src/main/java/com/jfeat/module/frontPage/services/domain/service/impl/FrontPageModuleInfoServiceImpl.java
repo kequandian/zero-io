@@ -3,7 +3,6 @@ package com.jfeat.module.frontPage.services.domain.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.jfeat.module.frontPage.services.domain.model.FrontPageModuleInfoRecord;
 import com.jfeat.module.frontPage.services.domain.model.ModuleModel;
 import com.jfeat.module.frontPage.services.domain.service.FrontPageModuleInfoService;
 import com.jfeat.module.frontPage.services.gen.crud.model.FrontPageModuleInfoModel;
@@ -11,7 +10,6 @@ import com.jfeat.module.frontPage.services.gen.crud.service.impl.CRUDFrontPageMo
 import com.jfeat.module.frontPage.services.gen.persistence.dao.FrontPageMapper;
 import com.jfeat.module.frontPage.services.gen.persistence.dao.FrontPageModuleInfoMapper;
 import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPage;
-import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPageModuleInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

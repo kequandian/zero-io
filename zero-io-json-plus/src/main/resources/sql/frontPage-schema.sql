@@ -6,7 +6,6 @@ CREATE TABLE `t_front_page`(
 `page_id` VARCHAR(50) NOT NULL COMMENT'前端传的唯一数值',
 `title` VARCHAR(50) NOT NULL COMMENT '标题',
 `notes` VARCHAR(200) COMMENT '页面描述',
--- `notest` VARCHAR(255) COMMENT '页面描述',
 `content` JSON DEFAULT NULL COMMENT '页面配置json数据',
 `appid` VARCHAR(50) DEFAULT NULL COMMENT 'appid',
 `json_name` VARCHAR(100) DEFAULT NULL COMMENT 'json文件名',
