@@ -8,16 +8,16 @@
 @mockName = mockName
 
 ### 获取已定义文件夹列表
-GET {{endpoint}}/mock
+GET {{endpoint}}/api/mock
 
 ### 获取自定义文件夹下 的 所有已定义的mock内容
-GET  {{endpoint}}/mock/{{dir}}
+GET  {{endpoint}}/api/mock/{{dir}}
 
 ### 获取{{dir}}文件夹下名字为：{{mockName}} 的 mock数据
-GET {{endpoint}}/mock/{{dir}}/{{mockName}}
+GET {{endpoint}}/api/mock/{{dir}}/{{mockName}}
 
 ### 提交数据 自定义json格式
-POST {{endpoint}}/mock/{{dir}}/{{mockName}}
+POST {{endpoint}}/api/mock/{{dir}}/{{mockName}}
 Content-Type: application/json
 
 {  
@@ -68,12 +68,12 @@ Content-Type: application/json
 
 
 
-// 代码中未启用：GET {{endpoint}}/mock （MockEndpoint 中该方法被注释）
-// 代码中未启用：GET  {{endpoint}}/mock/{{dir}} （MockEndpoint 中该方法被注释）
-GET {{endpoint}}/mock/{{mockName}}
+// 代码中未启用：GET {{endpoint}}/api/mock （MockEndpoint 中该方法被注释）
+// 代码中未启用：GET  {{endpoint}}/api/mock/{{dir}} （MockEndpoint 中该方法被注释）
+GET {{endpoint}}/api/mock/{{mockName}}
 
 ### 在默认目录下 新增 名字为 {{mockName}} 的 mock数据
-POST {{endpoint}}/mock/{{mockName}}
+POST {{endpoint}}/api/mock/{{mockName}}
 Content-Type: application/json
 
 {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jfeat.module.apis.services.gen.persistence.dao.DoSqlFieldMapper">
+
+<!--    &lt;!&ndash; 通用查询映射结果 &ndash;&gt;-->
+<!--    <resultMap id="BaseResultMap" type="model.persistence.gen.services.com.jfeat.module.apis.DoSqlField">-->
+<!--        <id column="id" property="id" />-->
+<!--        <result column="title" property="title" />-->
+<!--        <result column="description" property="description" />-->
+<!--        <result column="query_file_name" property="queryFileName" />-->
+<!--        <result column="execution_file_name" property="executionFileName" />-->
+<!--        <result column="param_status" property="paramStatus" />-->
+<!--        <result column="sql_version" property="sqlVersion" />-->
+<!--        <result column="note" property="note" />-->
+<!--        <result column="create_time" property="createTime" />-->
+<!--        <result column="update_time" property="updateTime" />-->
+<!--    </resultMap>-->
+
+<!--    &lt;!&ndash; 通用查询结果列 &ndash;&gt;-->
+<!--    <sql id="Base_Column_List">-->
+<!--        id, title, description, query_file_name, execution_file_name, param_status, sql_version, note, create_time, update_time-->
+<!--    </sql>-->
+
+</mapper>

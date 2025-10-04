@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jfeat.module.apis.services.domain.dao.QueryDoSqlFieldDao">
+    <sql id="Base_Column_List">
+        `lc`.`lc_do_sql`.id,
+        `lc`.`lc_do_sql`.field_name AS fieldName,
+        `lc`.`lc_do_sql`.sql_file_name AS sqlFileName,
+        `lc`.`lc_do_sql`.params,
+        `lc`.`lc_do_sql`.note
+    </sql>
+
+    <select id="queryMasterModel" resultType="DoSqlField">
+        SELECT `lc`.`lc_do_sql`.*
+        FROM `lc`.`lc_do_sql`
+        WHERE `lc`.`lc_do_sql`.id = #{id}
+        GROUP BY `lc`.`lc_do_sql`.id
+    </select>
+
+    <select id="findDoSqlFieldPage" resultType="DoSqlField" parameterType="DoSqlField">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM `lc`.`lc_do_sql`
+        WHERE 1=1
+
+        <if test="record.id != null and record.id > 0">
+            AND `lc`.`lc_do_sql`.id LIKE CONCAT('%', #{record.id}, '%')
+        </if>
+        <if test="record.fieldName != null and record.fieldName != ''">
+            AND `lc`.`lc_do_sql`.field_name LIKE CONCAT('%', #{record.fieldName}, '%')
+        </if>
+        <if test="record.sqlFileName != null and record.sqlFileName != ''">
+            AND `lc`.`lc_do_sql`.sql_file_name LIKE CONCAT('%', #{record.sqlFileName}, '%')
+        </if>
+        <if test="record.params != null and record.params != ''">
+            AND `lc`.`lc_do_sql`.params LIKE CONCAT('%', #{record.params}, '%')
+        </if>
+        <if test="record.note != null and record.note != ''">
+            AND `lc`.`lc_do_sql`.note LIKE CONCAT('%', #{record.note}, '%')
+        </if>
+    </select>
+
+</mapper>

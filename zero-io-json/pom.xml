@@ -8,7 +8,7 @@
     <version>1.2.0</version>
 
     <!-- upgrade history 
-        1.0.0 -> 1.2.0 移除buyapp相关代码
+        1.0.0 -> 1.2.0 移除buyapp相关代码, am.module.ioJson -> .module.io.json
         @when 2025-09
     
     -->

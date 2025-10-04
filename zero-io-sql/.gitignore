@@ -1,0 +1,16 @@
+target/
+*.idea/
+.vscode/
+logs/
+.vs/
+*.iml
+node_modules/
+demo/mysql/data/
+demo/web/src/
+demo/web/.ssh/
+demo/api/src/cfr-0.151.jar
+/80.conf
+*.jar
+.classpath
+.project
+.settings/

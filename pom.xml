@@ -33,9 +33,10 @@
         <module>zero-io-pdf</module>
         <module>zero-io-all</module>
         <module>zero-io-aliyun</module>
-        <module>zero-io-json</module>
         <module>zero-io-icon</module>
+        <module>zero-io-json</module>
         <module>zero-io-json-plus</module>
+        <module>zero-io-sql</module>
     </modules>
 
 </project>
