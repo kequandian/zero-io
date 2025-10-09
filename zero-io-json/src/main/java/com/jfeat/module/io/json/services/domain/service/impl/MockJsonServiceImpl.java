@@ -3,6 +3,7 @@ package com.jfeat.module.io.json.services.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jfeat.module.io.json.services.domain.service.MockJsonService;
+import com.jfeat.am.core.jwt.JWTKit;
 import com.jfeat.module.frontPage.services.domain.service.FrontPageModuleInfoService;
 import com.jfeat.module.frontPage.services.gen.persistence.dao.FrontPageMapper;
 import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPage;
@@ -198,6 +199,15 @@ public class MockJsonServiceImpl implements MockJsonService {
         if (json!=null&&json.get("title")!=null){
             title = json.get("title").toString();
         }
+
+        // 增加用户id
+        String userAccount = JWTKit.getAccount();
+        Long userId = JWTKit.getUserId();
+        JSONObject userInfo = new JSONObject();
+        userInfo.put("account", userAccount);
+        userInfo.put("id", userId);
+        json.put("userInfo:", userInfo);
+        
 
         FrontPage record = new FrontPage();
         record.setPageId(name);
