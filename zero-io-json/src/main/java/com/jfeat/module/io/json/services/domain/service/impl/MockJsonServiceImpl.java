@@ -189,7 +189,7 @@ public class MockJsonServiceImpl implements MockJsonService {
     // }
 
     @Override
-    public Integer saveJsonToDataBase(JSONObject json, String name, String tag) {
+    public Integer saveJsonToDataBase(JSONObject json, String pageId, String tag) {
 
         Integer affect = 0;
 
@@ -203,7 +203,6 @@ public class MockJsonServiceImpl implements MockJsonService {
         // 增加用户id
         String userAccount = JWTKit.getAccount();
         Long userId = JWTKit.getUserId();
-        Long userOrgId = JWTKit.getOrgId();
 
         JSONObject userInfo = new JSONObject();
         userInfo.put("account", userAccount);
@@ -212,10 +211,11 @@ public class MockJsonServiceImpl implements MockJsonService {
         json.put("userInfo:", userInfo);
 
         FrontPage record = new FrontPage();
-        record.setPageId(name);
+        record.setPageId(pageId);
+        record.setUserId(userId);
         record.setTitle(title);
         record.setContent(json.toJSONString());
-        record.setJsonName(name);
+        // record.setJsonName(pageId);
 //        record.setJsonPath(jsonPath);
         record.setTag(tag);
 
@@ -223,7 +223,7 @@ public class MockJsonServiceImpl implements MockJsonService {
         frontPageModuleInfoService.setTypeAndModuleName(record,json);
 
         QueryWrapper<FrontPage> pageQueryWrapper = new QueryWrapper<>();
-        pageQueryWrapper.eq(FrontPage.PAGE_ID, name);
+        pageQueryWrapper.eq(FrontPage.PAGE_ID, pageId);
         FrontPage frontPage = frontPageMapper.selectOne(pageQueryWrapper);
         if (frontPage==null){
             // record.setAppid(mockJsonService.getAppId());
