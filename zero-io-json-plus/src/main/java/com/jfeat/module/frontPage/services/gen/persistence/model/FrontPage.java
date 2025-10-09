@@ -8,8 +8,6 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import java.util.Date;
 
-import org.mapstruct.util.Experimental;
-
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
@@ -38,6 +36,9 @@ public class FrontPage extends Model<FrontPage> {
     private String pageName;
     @ApiModelProperty(value = "前端传的唯一数值")
     private String pageId;
+
+    @ApiModelProperty(value = "提交人用户ID")
+    private Long userId;
 
     @ApiModelProperty(value = "标题")
     private String title;
@@ -236,7 +237,17 @@ public class FrontPage extends Model<FrontPage> {
 
     public static final String PAGE_ID = "page_id";
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public static final String TITLE = "title";
+
+    public static final String USER_ID = "user_id";
 
     public static final String NOTES = "notes";
 
@@ -268,6 +279,7 @@ public class FrontPage extends Model<FrontPage> {
         return "FrontPage{" +
                 "id=" + id +
                 ", pageId=" + pageId +
+                ", userId=" + userId +
                 ", title=" + title +
                 ", notes=" + notes +
                 ", content=" + content +

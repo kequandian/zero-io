@@ -203,11 +203,13 @@ public class MockJsonServiceImpl implements MockJsonService {
         // 增加用户id
         String userAccount = JWTKit.getAccount();
         Long userId = JWTKit.getUserId();
+        Long userOrgId = JWTKit.getOrgId();
+
         JSONObject userInfo = new JSONObject();
         userInfo.put("account", userAccount);
         userInfo.put("id", userId);
+//        userInfo.put("orgId", userOrgId);
         json.put("userInfo:", userInfo);
-        
 
         FrontPage record = new FrontPage();
         record.setPageId(name);

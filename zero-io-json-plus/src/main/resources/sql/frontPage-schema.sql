@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS `t_front_page`;
 CREATE TABLE `t_front_page`(
 `id` BIGINT(20)  auto_increment,
 `page_id` VARCHAR(50) NOT NULL COMMENT'前端传的唯一数值',
+`user_id` BIGINT(20) DEFAULT NULL COMMENT '提交人用户id',
 `title` VARCHAR(50) NOT NULL COMMENT '标题',
 `notes` VARCHAR(200) COMMENT '页面描述',
 `content` JSON DEFAULT NULL COMMENT '页面配置json数据',

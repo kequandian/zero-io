@@ -5,6 +5,7 @@
         t_front_page.id,
         t_front_page.page_name AS pageName,
         t_front_page.page_id AS pageId,
+        t_front_page.user_id AS userId,
         t_front_page.title,
         t_front_page.notes,
         t_front_page.content, t_front_page.appid,
@@ -53,6 +54,9 @@
 
         <if test="record.pageId != null and record.pageId!= ''">
             AND t_front_page.page_id LIKE CONCAT('%',#{record.pageId},'%')
+        </if>
+        <if test="record.userId != null and record.userId>0 ">
+            AND t_front_page.user_id = #{record.userId}
         </if>
         <if test="record.title != null and record.title!= ''">
             AND t_front_page.title LIKE CONCAT('%',#{record.title},'%')

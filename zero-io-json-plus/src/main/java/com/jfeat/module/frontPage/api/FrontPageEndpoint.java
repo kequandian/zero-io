@@ -97,6 +97,7 @@ public class FrontPageEndpoint {
             @ApiImplicitParam(name = "search", dataType = "String"),
             @ApiImplicitParam(name = "id", dataType = "Long"),
             @ApiImplicitParam(name = "count", dataType = "String"),
+            @ApiImplicitParam(name = "userId", dataType = "Long"),
             @ApiImplicitParam(name = "title", dataType = "String"),
             @ApiImplicitParam(name = "notes", dataType = "String"),
             @ApiImplicitParam(name = "content", dataType = "String"),
@@ -118,6 +119,8 @@ public class FrontPageEndpoint {
                                   @RequestParam(name = "search", required = false) String search,
 
                                   @RequestParam(name = "count", required = false) String pageId,
+
+                                  @RequestParam(name = "userId", required = false) Long userId,
 
                                   @RequestParam(name = "title", required = false) String title,
 
@@ -162,6 +165,7 @@ public class FrontPageEndpoint {
 
         FrontPageRecord record = new FrontPageRecord();
         record.setPageId(pageId);
+        record.setUserId(userId);
         record.setTitle(title);
         record.setnotes(notes);
         record.setContent(content);
