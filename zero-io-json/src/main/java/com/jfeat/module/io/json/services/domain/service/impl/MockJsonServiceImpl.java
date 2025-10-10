@@ -1,5 +1,7 @@
 package com.jfeat.module.io.json.services.domain.service.impl;
 
+import com.jfeat.crud.base.exception.BusinessException;
+import com.jfeat.crud.base.exception.BusinessCode;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jfeat.module.io.json.services.domain.service.MockJsonService;
@@ -54,14 +56,29 @@ public class MockJsonServiceImpl implements MockJsonService {
     }
 
     @Override
-    public JSONObject readJsonFile(String name, String tag) {
+    public JSONObject readJsonFile(String pageId, String tag) {
         // checkAppMap();
 
         QueryWrapper<FrontPage> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(FrontPage.PAGE_ID, name);
+        queryWrapper.eq(FrontPage.PAGE_ID, pageId);
         FrontPage frontPage = frontPageMapper.selectOne(queryWrapper);
+        if(frontPage == null){
+            throw new BusinessException(BusinessCode.BadRequest,"pageId："+pageId+" 对应的页面配置不存在");
+        }
+
         String content = frontPage.getContent();
         JSONObject json = JSONObject.parseObject(content);
+
+        // 追加页面信息
+        JSONObject pageInfo = new JSONObject();
+        pageInfo.put("pageId", pageId);
+        pageInfo.put("tag", frontPage.getTag());
+        pageInfo.put("title", frontPage.getTitle());
+
+        //
+        pageInfo.put("pageId", pageId);
+        pageInfo.put("appid", frontPage.getAppid());
+        json.put("pageInfo", pageInfo);
 
 //        //如果有tag，则用tag查出来的id作为
 //        if(tag != null && !tag.equals("")){
@@ -215,7 +232,7 @@ public class MockJsonServiceImpl implements MockJsonService {
         record.setUserId(userId);
         record.setTitle(title);
         record.setContent(json.toJSONString());
-        // record.setJsonName(pageId);
+//        record.setJsonName(pageId);
 //        record.setJsonPath(jsonPath);
         record.setTag(tag);
 
