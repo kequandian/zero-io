@@ -44,7 +44,7 @@ import java.util.List;
 public class AdmDoSqlEndpoint {
 
     @Resource
-    DoSqlFieldService DoSqlFieldService;
+    DoSqlFieldService doSqlFieldService;
 
     @Resource
     QueryDoSqlFieldDao queryDoSqlFieldDao;
@@ -55,7 +55,7 @@ public class AdmDoSqlEndpoint {
     @ApiOperation(value = "新建 DoSqlField", response = DoSqlField.class)
     public Tip createDoSqlField(@RequestBody DoSqlField entity) {
         try {
-            DoSqlFieldService.saveAndWriteFIle(entity);
+            doSqlFieldService.saveAndWriteFIle(entity);
         } catch (DuplicateKeyException e) {
             throw new BusinessException(BusinessCode.DuplicateKey);
         }
@@ -66,7 +66,8 @@ public class AdmDoSqlEndpoint {
     @GetMapping("/{id}")
     @ApiOperation(value = "查看 DoSqlField", response = DoSqlField.class)
     public Tip getDoSqlField(@PathVariable Long id) {
-        return SuccessTip.create(DoSqlFieldService.queryMasterModel(queryDoSqlFieldDao, id));
+        // return SuccessTip.create(doSqlFieldService.queryMasterModel(queryDoSqlFieldDao, id));
+        return SuccessTip.create(doSqlFieldService.getDetail(id));
     }
 
     @BusinessLog(name = "DoSqlField", value = "update DoSqlField")
@@ -74,14 +75,14 @@ public class AdmDoSqlEndpoint {
     @ApiOperation(value = "修改 DoSqlField", response = DoSqlField.class)
     public Tip updateDoSqlField(@PathVariable Long id, @RequestBody DoSqlField entity) {
         entity.setId(id);
-        return SuccessTip.create(DoSqlFieldService.updateIncludeSqlFIle(entity));
+        return SuccessTip.create(doSqlFieldService.updateIncludeSqlFIle(entity));
     }
 
     @BusinessLog(name = "DoSqlField", value = "delete DoSqlField")
     @DeleteMapping("/{id}")
     @ApiOperation("删除 DoSqlField")
     public Tip deleteDoSqlField(@PathVariable Long id) {
-        return SuccessTip.create(DoSqlFieldService.deleteMaster(id));
+        return SuccessTip.create(doSqlFieldService.deleteMaster(id));
     }
 
     @ApiOperation(value = "DoSqlField 列表信息", response = DoSqlField.class)
@@ -90,16 +91,8 @@ public class AdmDoSqlEndpoint {
             @ApiImplicitParam(name = "pageNum", dataType = "Integer"),
             @ApiImplicitParam(name = "pageSize", dataType = "Integer"),
             @ApiImplicitParam(name = "search", dataType = "String"),
-            @ApiImplicitParam(name = "id", dataType = "Long"),
-            @ApiImplicitParam(name = "title", dataType = "String"),
-            @ApiImplicitParam(name = "description", dataType = "String"),
-            @ApiImplicitParam(name = "queryFileName", dataType = "String"),
-            @ApiImplicitParam(name = "executionFileName", dataType = "String"),
-            @ApiImplicitParam(name = "paramStatus", dataType = "Integer"),
-            @ApiImplicitParam(name = "sqlVersion", dataType = "String"),
+            @ApiImplicitParam(name = "apiName", dataType = "String"),
             @ApiImplicitParam(name = "note", dataType = "String"),
-            @ApiImplicitParam(name = "createTime", dataType = "Date"),
-            @ApiImplicitParam(name = "updateTime", dataType = "Date"),
             @ApiImplicitParam(name = "orderBy", dataType = "String"),
             @ApiImplicitParam(name = "sort", dataType = "String")
     })
@@ -110,12 +103,8 @@ public class AdmDoSqlEndpoint {
                                    @RequestParam(name = "tag", required = false) String tag,
                                    // end tag
                                    @RequestParam(name = "search", required = false) String search,
-
-                                   @RequestParam(name = "fieldName", required = false) String fieldName,
-                                   @RequestParam(name = "sqlFileName", required = false) String sqlFileName,
-                                   @RequestParam(name = "params", required = false) String params,
+                                   @RequestParam(name = "apiName", required = false) String apiName,
                                    @RequestParam(name = "note", required = false) String note,
-
                                    @RequestParam(name = "orderBy", required = false) String orderBy,
                                    @RequestParam(name = "sort", required = false) String sort) {
 
@@ -134,29 +123,33 @@ public class AdmDoSqlEndpoint {
         page.setSize(pageSize);
 
         DoSqlField record = new DoSqlField();
-        record.setFieldName(fieldName);
-        record.setSqlFileName(sqlFileName);
-        record.setParams(params);
+        record.setApiName(apiName);
         record.setNote(note);
 
 
         List<DoSqlField> devDevelopPage = queryDoSqlFieldDao.findDoSqlFieldPage(page, record, tag, search, orderBy, null, null);
-        // 计算apiUrl
-        DoSqlFieldService.calculateApiUrl(devDevelopPage);
 
         page.setRecords(devDevelopPage);
 
         return SuccessTip.create(page);
     }
 
-    /**
-     * 查询详情，包括sql文件内容
-     * @param id
-     * @return
-     */
-    @GetMapping("/{id}/detail")
-    public Tip queryDetail(@PathVariable("id") Long id) {
-        return SuccessTip.create(DoSqlFieldService.getDetail(id));
+    @BusinessLog(name = "DoSqlField", value = "initialize from sql folder")
+    @PostMapping("/init")
+    @ApiOperation(value = "初始化所有 .sql 文件到数据库", response = Object.class)
+    public Tip initializeFromSqlFolder() {
+        return SuccessTip.create(doSqlFieldService.initializeFromSqlFiles());
     }
+
+    // /**
+    //  * 查询详情，包括sql文件内容
+    //  * @param id
+    //  * @return
+    //  */
+    // @GetMapping("/{id}/detail")
+    // @ApiOperation(value = "查看 DoSqlField 详情（含sql）", response = DoSqlField.class)
+    // public Tip queryDetail(@PathVariable("id") Long id) {
+    //     return SuccessTip.create(doSqlFieldService.getDetail(id));
+    // }
 }
 

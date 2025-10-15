@@ -20,7 +20,7 @@ import lombok.Data;
  * @since 2022-09-16
  */
 @Data
-@TableName("`lc`.`lc_do_sql`")
+@TableName("`lc`.`t_apis_dosql`")
 @ApiModel(value = "DoSqlField对象", description = "")
 public class DoSqlField extends Model<DoSqlField> {
 
@@ -29,11 +29,11 @@ public class DoSqlField extends Model<DoSqlField> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty(value = "服务名称")
-    private String fieldName;
+    @ApiModelProperty(value = "接口名称")
+    private String apiName;
 
-    @ApiModelProperty(value = "sql文件名")
-    private String sqlFileName;
+    @ApiModelProperty(value = "sql文件路径")
+    private String sqlFilePath;
 
     @ApiModelProperty(value = "参数")
     private String params;
@@ -41,11 +41,9 @@ public class DoSqlField extends Model<DoSqlField> {
     @ApiModelProperty(value = "备注")
     private String note;
 
+    
+    // DTO data 
     @ApiModelProperty(value = "sql内容")
     @TableField(exist = false)
     private String sql;
-
-    @ApiModelProperty(value = "执行sql文件的api")
-    @TableField(exist = false)
-    private String apiUrl;
 }

@@ -4,8 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
 import com.jfeat.module.apis.services.domain.service.DoSqlServices;
-import com.jfeat.module.apis.services.domain.service.ParseRequestArgument;
+import com.jfeat.module.apis.services.utils.RequestArgumentUtil;
 import com.jfeat.module.apis.services.domain.service.ParseSql;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -20,17 +21,13 @@ public class DoSqlServicesImp implements DoSqlServices {
 
     protected final Log logger = LogFactory.getLog(getClass());
 
-
-    @Resource
-    ParseRequestArgument parseRequestArgument;
-
     @Resource
     ParseSql parseSql;
 
     @Override
     public JSONArray querySql(HttpServletRequest request, String sqlFile) {
         //        获取参数键值对
-        Map<String,String> map = parseRequestArgument.parseGetRequestArgument(request);
+        Map<String,String> map = RequestArgumentUtil.parseGetRequestArgument(request);
         String sql = parseSql.readSqlFile(sqlFile);
         if (sql==null || sql.equals("")){
             logger.error("读取sql文件失败"+sql);
@@ -43,7 +40,7 @@ public class DoSqlServicesImp implements DoSqlServices {
 
     @Override
     public int executeSql(HttpServletRequest request, String sqlFile) {
-        Map<String,String> map = parseRequestArgument.parseGetRequestArgument(request);
+        Map<String,String> map = RequestArgumentUtil.parseGetRequestArgument(request);
         String sql = parseSql.readSqlFile(sqlFile);
         if (sql==null || sql.equals("")){
             logger.error("读取sql文件失败"+sql);

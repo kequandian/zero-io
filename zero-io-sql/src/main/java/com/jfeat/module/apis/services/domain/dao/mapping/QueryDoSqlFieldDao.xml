@@ -2,40 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jfeat.module.apis.services.domain.dao.QueryDoSqlFieldDao">
     <sql id="Base_Column_List">
-        `lc`.`lc_do_sql`.id,
-        `lc`.`lc_do_sql`.field_name AS fieldName,
-        `lc`.`lc_do_sql`.sql_file_name AS sqlFileName,
-        `lc`.`lc_do_sql`.params,
-        `lc`.`lc_do_sql`.note
+        `lc`.`t_apis_dosql`.id,
+        `lc`.`t_apis_dosql`.api_name AS apiName,
+        `lc`.`t_apis_dosql`.sql_file_path AS sqlFilePath,
+        `lc`.`t_apis_dosql`.params,
+        `lc`.`t_apis_dosql`.note
     </sql>
 
     <select id="queryMasterModel" resultType="DoSqlField">
-        SELECT `lc`.`lc_do_sql`.*
-        FROM `lc`.`lc_do_sql`
-        WHERE `lc`.`lc_do_sql`.id = #{id}
-        GROUP BY `lc`.`lc_do_sql`.id
+        SELECT `lc`.`t_apis_dosql`.*
+        FROM `lc`.`t_apis_dosql`
+        WHERE `lc`.`t_apis_dosql`.id = #{id}
+        GROUP BY `lc`.`t_apis_dosql`.id
     </select>
 
     <select id="findDoSqlFieldPage" resultType="DoSqlField" parameterType="DoSqlField">
         SELECT
         <include refid="Base_Column_List" />
-        FROM `lc`.`lc_do_sql`
+        FROM `lc`.`t_apis_dosql`
         WHERE 1=1
 
         <if test="record.id != null and record.id > 0">
-            AND `lc`.`lc_do_sql`.id LIKE CONCAT('%', #{record.id}, '%')
+            AND `lc`.`t_apis_dosql`.id LIKE CONCAT('%', #{record.id}, '%')
         </if>
-        <if test="record.fieldName != null and record.fieldName != ''">
-            AND `lc`.`lc_do_sql`.field_name LIKE CONCAT('%', #{record.fieldName}, '%')
+        <if test="record.apiName != null and record.apiName != ''">
+            AND `lc`.`t_apis_dosql`.api_name LIKE CONCAT('%', #{record.apiName}, '%')
         </if>
-        <if test="record.sqlFileName != null and record.sqlFileName != ''">
-            AND `lc`.`lc_do_sql`.sql_file_name LIKE CONCAT('%', #{record.sqlFileName}, '%')
+        <if test="record.sqlFilePath != null and record.sqlFilePath != ''">
+            AND `lc`.`t_apis_dosql`.sql_file_path LIKE CONCAT('%', #{record.sqlFilePath}, '%')
         </if>
         <if test="record.params != null and record.params != ''">
-            AND `lc`.`lc_do_sql`.params LIKE CONCAT('%', #{record.params}, '%')
+            AND `lc`.`t_apis_dosql`.params LIKE CONCAT('%', #{record.params}, '%')
         </if>
         <if test="record.note != null and record.note != ''">
-            AND `lc`.`lc_do_sql`.note LIKE CONCAT('%', #{record.note}, '%')
+            AND `lc`.`t_apis_dosql`.note LIKE CONCAT('%', #{record.note}, '%')
         </if>
     </select>
 

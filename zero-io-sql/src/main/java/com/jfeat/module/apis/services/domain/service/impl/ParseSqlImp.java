@@ -3,6 +3,7 @@ package com.jfeat.module.apis.services.domain.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfeat.module.apis.services.domain.service.ParseSql;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +27,7 @@ public class ParseSqlImp implements ParseSql {
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-    @Value("${lowcode.dosql.path}")
+    @Value("${apis.dosql.path}")
     private String sqlFilePath; // sql文件路径
 
     private static final String sqlFileType = ".sql"; // 文件类型

@@ -14,3 +14,5 @@ demo/api/src/cfr-0.151.jar
 .classpath
 .project
 .settings/
+
+__pycache__/

@@ -1,0 +1,66 @@
+@endpoint=http://localhost:8080
+@queryApiName=tables
+@execApiName=testpost
+@id=2
+
+### 1. 用户端-查询SQL（GET）
+# 说明：读取 `${apis.dosql.path}` 下 `{{queryApiName}}.sql`，执行 SELECT；参数从 query/form 获取
+GET {{endpoint}}/api/apis/{{queryApiName}}
+Accept: application/json
+
+### 2. 用户端-执行SQL（POST）
+# 说明：读取 `{{execApiName}}.sql`，执行更新类语句；参数从表单获取
+POST {{endpoint}}/api/apis/{{execApiName}}
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+addName=Alice&deleteName=Bob
+
+### 3. 管理端-查询单个API详情（含SQL）
+# 说明：默认返回 sql 字段（文件内容）
+GET {{endpoint}}/api/adm/apis/{{id}}
+Accept: application/json
+
+### 4. 管理端-新增API（提交 SQL）
+# 说明：创建并写入文件，生成项目相对路径到 sqlFilePath
+POST {{endpoint}}/api/adm/apis
+Content-Type: application/json
+Accept: application/json
+
+{
+  "apiName": "sample_get",
+  "sql": "SELECT * FROM t_devops_test WHERE id = #{id}",
+  "note": "示例查询API"
+}
+
+### 5. 管理端-删除API
+DELETE {{endpoint}}/api/adm/apis/{{id}}
+Accept: application/json
+
+### 6. 管理端-更新API（名称与SQL）
+# 说明：若 apiName 变更会同步重命名文件；提交 sql 时会覆盖写入并更新 params
+PUT {{endpoint}}/api/adm/apis/{{id}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "apiName": "sample_get_v2",
+  "sql": "SELECT id, name FROM t_devops_test WHERE id = #{id}",
+  "note": "更新接口名称与SQL"
+}
+
+### 7. 管理端-初始化（扫描 apis 目录 .sql 并入库）
+# 说明：仅新增缺失记录；数据库已存在同名 apiName 的条目将跳过。
+# 返回统计：scanned/created/skipped/errors
+POST {{endpoint}}/api/adm/apis/init
+Accept: application/json
+
+### 可选：管理端-分页查询
+GET {{endpoint}}/api/adm/apis?pageNum=1&pageSize=10
+Accept: application/json
+
+
+
+
+
+
