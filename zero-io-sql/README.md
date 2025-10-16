@@ -17,13 +17,13 @@
 - 查询与执行：`SELECT`/`SHOW` 作为查询；其他语句按更新执行。
 
 **使用端接口（执行 SQL）**
-- `GET /api/apis/{sqlFile}`：查询 SQL，返回查询结果。
+- `GET /api/apis/{apiName}`：查询 SQL，返回查询结果。
   - `sqlFile` 为文件名（可带或不带 `.sql` 扩展名）。
   - 请求参数通过查询串或表单提交传入，用于替换 SQL 中的占位符。
   - 返回：
     - 单条查询语句 → 直接返回结果数组（每个元素为一行记录的键值对）。
     - 多条查询语句 → 返回二维数组，每一项是一个查询结果集。
-- `POST /api/apis/{sqlFile}`：执行 SQL（INSERT/UPDATE/DELETE 等），返回影响行数。
+- `POST /api/apis/{apiName}`：执行 SQL（INSERT/UPDATE/DELETE 等），返回影响行数。
 - 示例：
   - `GET /api/apis/testget?name1=foo&name2=bar`
   - `GET /api/apis/fields?tableName=lc_do_sql`（`fields.sql` 示例，使用 `${tableName}` 占位符）。

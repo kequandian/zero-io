@@ -2,6 +2,7 @@ package com.jfeat.module.apis.services.domain.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jfeat.crud.plus.CRUD;
 import com.jfeat.module.apis.services.domain.service.ParseSql;
 
 import org.apache.commons.logging.Log;
@@ -90,20 +91,19 @@ public class ParseSqlImp implements ParseSql {
 
 
     @Override
-    public JSONArray querySql(String sql) {
-        List<String> sqlList = loadSql(sql);
-        JSONArray result = new JSONArray();
+    public JSONObject querySql(String sql) {
+        JSONObject result = new JSONObject();
 
-        // added in 2024-12-24 如果是是有一个查询则不需要外层的 array
+        List<String> sqlList = loadSql(sql);
         if (sqlList != null && sqlList.size() == 1) {
             String executeSql = sqlList.get(0);
             if (executeSql.toUpperCase().startsWith("SELECT") || executeSql.toUpperCase().startsWith("SHOW")) {
                 try {
                     List<Map<String, Object>> list = jdbcTemplate.queryForList(executeSql);
                     // 将查询结果转换为jsonArray
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("rows", list);
-                    result = jsonObject.getJSONArray("rows");
+                    // JSONObject jsonObject = new JSONObject();
+                    result.put(CRUD.ITEMS, list);
+                    // result = jsonObject.getJSONArray(CRUD.ITEMS);
                 } catch (Exception e) {
                     logger.error("sql执行异常：" + executeSql);
                 }
@@ -112,15 +112,15 @@ public class ParseSqlImp implements ParseSql {
             for (String s : sqlList) {
                 logger.info(s);
                 // 只有当select 开头的语句进行查询
-                if (s.toUpperCase().startsWith("SELECT") || s.toUpperCase().startsWith("SHOW")) {
+                if (s.trim().toUpperCase().startsWith("SELECT ") || s.trim().toUpperCase().startsWith("SHOW ")) {
                     try {
                         List<Map<String, Object>> list = jdbcTemplate.queryForList(s);
 
                         // 将查询结果转换为jsonArray
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("rows", list);
-                        JSONArray jsonArray = jsonObject.getJSONArray("rows");
-                        result.add(jsonArray);
+                        // JSONObject jsonObject = new JSONObject();
+                        result.put(CRUD.ITEMS, list);
+                        // JSONArray jsonArray = jsonObject.getJSONArray("rows");
+                        // result.add(jsonArray);
                     } catch (Exception e) {
                         logger.error("sql语句：" + s);
                     }

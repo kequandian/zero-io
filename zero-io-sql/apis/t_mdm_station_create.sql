@@ -1,0 +1,1 @@
+INSERT INTO t_mdm_station (${cols}) VALUES (${vals});

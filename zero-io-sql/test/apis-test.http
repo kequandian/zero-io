@@ -63,4 +63,37 @@ Accept: application/json
 
 
 
+### 8. 用户端-读取 t_mdm_station（GET）
+# 说明：读取类两段查询（总数 + 列表）将合并返回一个对象：{total, records}；where/orderBy 为原样替换；分页使用 pageNum/pageSize
+GET {{endpoint}}/api/apis/t_mdm_station_read?where=WHERE%20id%3D1&orderBy=ORDER%20BY%20id%20DESC&pageNum=1&pageSize=10
+Accept: application/json
+
+### 9. 用户端-新增 t_mdm_station（POST）
+# 说明：cols 为列清单，vals 为值清单（可包含 #{param} 以自动加引号）
+POST {{endpoint}}/api/apis/t_mdm_station_create
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+cols=id,name,code&vals=1,'Station A','ST001'
+
+### 10. 用户端-更新 t_mdm_station（POST）
+# 说明：setExpr 为 SET 子句内容，where 为筛选条件（包含 WHERE）
+POST {{endpoint}}/api/apis/t_mdm_station_update
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+setExpr=name='Station B',code='ST002'&where=WHERE%20id%3D1
+
+### 11. 用户端-删除 t_mdm_station（POST）
+# 说明：根据 where 条件删除记录（包含 WHERE）
+POST {{endpoint}}/api/apis/t_mdm_station_delete
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+where=WHERE%20id%3D1
+
+
+
+
+
 

@@ -1,6 +1,6 @@
 package com.jfeat.module.apis.services.domain.service;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public interface ParseSql {
      * @param sql
      * @return 二维列表对象 每一个列表代表一个查询结果
      */
-    JSONArray querySql(String sql);
+    JSONObject querySql(String sql);
 
 
     /**

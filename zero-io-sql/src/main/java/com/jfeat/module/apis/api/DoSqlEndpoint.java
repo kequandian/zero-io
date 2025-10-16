@@ -31,15 +31,15 @@ public class DoSqlEndpoint {
 
 
     @ApiOperation(value = "查询sql语句", response = HttpServletRequest.class)
-    @GetMapping("/{sqlFile}")
-    public Tip getResultList(@PathVariable("sqlFile") String sqlFile, HttpServletRequest request) {
-        return SuccessTip.create(doSqlServices.querySql(request, sqlFile));
+    @GetMapping("/{apiName}")
+    public Tip getResultList(@PathVariable("apiName") String apiName, HttpServletRequest request) {
+        return SuccessTip.create(doSqlServices.querySql(request, apiName));
     }
 
     @ApiOperation(value = "执行sql 语句", response = HttpServletRequest.class)
-    @PostMapping("/{sqlFile}")
-    public Tip executeSql(@PathVariable("sqlFile") String sqlFile, HttpServletRequest request) {
-        return SuccessTip.create(doSqlServices.executeSql(request, sqlFile));
+    @PostMapping("/{apiName}")
+    public Tip executeSql(@PathVariable("apiName") String apiName, HttpServletRequest request) {
+        return SuccessTip.create(doSqlServices.executeSql(request, apiName));
     }
 
 

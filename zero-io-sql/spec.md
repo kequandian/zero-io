@@ -17,7 +17,7 @@
 
 **配置项**
 - `apis.dosql.path`：后台管理服务读写 SQL 文件的目录（生成并保存 `sqlFilePath` 的相对路径基准）。
-- `apis.dosql.path`：使用端读取 SQL 文件的目录（`/api/apis/{sqlFile}` 调用时使用）。
+- `apis.dosql.path`：使用端读取 SQL 文件的目录（`/api/apis/{apiName}` 调用时使用）。
 - 建议两者指向同一目录以避免路径不一致：例如都配置为 `apis`。
 
 **数据库字段说明（t_apis_dosql）**
@@ -64,10 +64,10 @@
   - 统计返回：`scanned/created/skipped/errors`。
 
 **使用端接口（执行 SQL）**
-- 查询：`GET /api/apis/{sqlFile}` → 返回查询结果。
-  - `sqlFile` 通常为文件名（可带或不带 `.sql` 扩展名），目录由 `apis.dosql.path` 控制。
+- 查询：`GET /api/apis/{apiName}` → 返回查询结果。
+  - `apiName` 为简约别名（可与文件名一致，或映射到实际文件），目录由 `apis.dosql.path` 控制。
   - 将请求参数按上文约定替换占位符后执行。
-- 执行：`POST /api/apis/{sqlFile}` → 返回影响行数。
+- 执行：`POST /api/apis/{apiName}` → 返回影响行数。
 
 **示例**
 - SQL 文件 `apis/testget.sql`：
@@ -86,3 +86,71 @@
 - 文件缺失：详情接口会将库中 `sqlFilePath` 置为 `null`；建议通过重新上传或更新恢复文件。
 - 参数过多：`params` 默认长度为 `varchar(100)`，如不够用可调整为更长（例如 `varchar(500)`）。
 - 目录不一致：确保 `apis.dosql.path` 与 `apis.dosql.path` 指向相同目录，避免管理端与使用端读取的不是同一位置。
+
+---
+
+### 命名约定与 CRUD 模板
+
+**文件命名建议**
+- 统一使用下划线风格，体现对象与动作，便于检索和初始化：
+  - `{object}_{action}.sql`，例如：`t_mdm_station_read.sql`、`t_mdm_station_create.sql`、`t_mdm_station_update.sql`、`t_mdm_station_delete.sql`。
+  - 若需区分列表与详情，可扩展：`{object}_read_list.sql`、`{object}_read_detail.sql`。
+
+**通用占位符（用于更灵活的 CRUD）**
+- `${where}`：原样替换 WHERE 子句（包含 `WHERE ...`），用于筛选条件。
+- `${orderBy}`：原样替换 ORDER BY 子句（包含 `ORDER BY ...`），用于排序。
+- 分页参数：`pageNum` / `pageSize`（数值型）。
+  - 读取示例中使用：`LIMIT ${pageSize} OFFSET ((${pageNum} - 1) * ${pageSize})`。
+  - 兼容旧版：仍可使用 `${limit}` / `${offset}`，但推荐统一迁移到 `pageNum/pageSize`。
+- `${cols}`：INSERT 的列清单（逗号分隔）。
+- `${vals}`：INSERT 的值清单（逗号分隔，值本身可写成 `#{param}` 以获得自动加引号）。
+- `${setExpr}`：UPDATE 的 SET 子句内容（例如 `name=#{name}, code=#{code}`）。
+
+> 安全提示：上述 `${...}` 为原样替换，请仅用于可信的内容（如白名单列名、受控拼接），避免将不可信输入直接拼接到 SQL。
+
+**查询结果返回约定**
+- 单条查询语句：直接返回结果数组。
+- 多条查询语句：返回二维数组（每条语句一个结果集）。
+
+---
+
+### 示例：t_mdm_station 的 CRUD
+
+以下示例文件位于 `apis/` 目录，体现了按对象拆分成 4 个 API 定义：
+
+1) 读取（支持总数 + 列表，可选分页与排序）—— `t_mdm_station_read.sql`
+```
+SELECT COUNT(1) AS total FROM t_mdm_station ${where};
+SELECT * FROM t_mdm_station ${where} ${orderBy} LIMIT ${limit} OFFSET ${offset};
+```
+
+2) 新增 —— `t_mdm_station_create.sql`
+```
+INSERT INTO t_mdm_station (${cols}) VALUES (${vals});
+```
+
+3) 更新 —— `t_mdm_station_update.sql`
+```
+UPDATE t_mdm_station SET ${setExpr} ${where};
+```
+
+4) 删除 —— `t_mdm_station_delete.sql`
+```
+DELETE FROM t_mdm_station ${where};
+```
+
+**调用示例（与 apis-test.http 保持一致风格）**
+- 读取（GET）：
+  - `GET /api/apis/mdm_station?where=WHERE%20id%3D1&orderBy=ORDER%20BY%20id%20DESC&limit=10&offset=0`
+  - 说明：路径中的 `apiName` 使用简约别名 `mdm_station`，对应 SQL 文件为 `apis/t_mdm_station_read.sql`。
+  - 返回两段结果：第一段为总数（`total`），第二段为记录列表。
+- 新增（POST，`application/x-www-form-urlencoded`）：
+  - `cols=id,name,code`
+  - `vals=1,'Station A','ST001'`
+- 更新（POST）：
+  - `setExpr=name='Station B',code='ST002'`
+  - `where=WHERE id=1`
+- 删除（POST）：
+  - `where=WHERE id=1`
+
+> 提示：若不确定表字段，可先调用 `GET /api/apis/fields?tableName=t_mdm_station` 查看列信息（示例文件 `apis/fields.sql`）。
