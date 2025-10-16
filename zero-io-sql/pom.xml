@@ -21,12 +21,6 @@
     </properties>
 
     <dependencies>
-        <!-- 引入Lombok依赖 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -51,7 +45,6 @@
                         </apiSource>
                     </apiSources>
                 </configuration>
-
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -61,6 +54,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+
         </plugins>
     </build>
 </project>

@@ -108,25 +108,65 @@ public class ParseSqlImp implements ParseSql {
                     logger.error("sql执行异常：" + executeSql);
                 }
             }
-        } else {
+        } else if (sqlList != null && sqlList.size() > 1) {
+            // 分页识别：第一条为 COUNT(1) AS total，第二条为列表查询
+            String first = sqlList.get(0).trim();
+            String second = sqlList.get(1).trim();
+            String firstUpper = first.toUpperCase();
+
+            boolean firstIsCountTotal = firstUpper.startsWith("SELECT ") && firstUpper.contains("COUNT(") && firstUpper.contains("AS TOTAL");
+            boolean secondIsQuery = second.toUpperCase().startsWith("SELECT") || second.toUpperCase().startsWith("SHOW");
+
+            if (firstIsCountTotal && secondIsQuery) {
+                // 识别为分页查询：返回 { total, records }
+                Number totalNumber = 0;
+                try {
+                    List<Map<String, Object>> countRows = jdbcTemplate.queryForList(first);
+                    if (countRows != null && !countRows.isEmpty()) {
+                        Map<String, Object> row = countRows.get(0);
+                        Object totalObj = row.get("total");
+                        if (totalObj == null) totalObj = row.get("TOTAL");
+                        if (totalObj instanceof Number) {
+                            totalNumber = (Number) totalObj;
+                        } else if (totalObj != null) {
+                            try {
+                                totalNumber = Long.parseLong(totalObj.toString());
+                            } catch (Exception ignore) {
+                                // 保持默认 0
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("统计总数执行异常：" + first);
+                }
+
+                List<Map<String, Object>> records = new ArrayList<>();
+                try {
+                    records = jdbcTemplate.queryForList(second);
+                } catch (Exception e) {
+                    logger.error("列表查询执行异常：" + second);
+                }
+
+                result.put("total", totalNumber == null ? 0 : totalNumber);
+                result.put("records", records);
+                return result;
+            }
+
+            // 默认行为：多条查询返回二维数组（每条语句一个结果集）
+            JSONArray arrays = new JSONArray();
             for (String s : sqlList) {
                 logger.info(s);
-                // 只有当select 开头的语句进行查询
-                if (s.trim().toUpperCase().startsWith("SELECT ") || s.trim().toUpperCase().startsWith("SHOW ")) {
+                String up = s.trim().toUpperCase();
+                if (up.startsWith("SELECT") || up.startsWith("SHOW")) {
                     try {
                         List<Map<String, Object>> list = jdbcTemplate.queryForList(s);
-
-                        // 将查询结果转换为jsonArray
-                        // JSONObject jsonObject = new JSONObject();
-                        result.put(CRUD.ITEMS, list);
-                        // JSONArray jsonArray = jsonObject.getJSONArray("rows");
-                        // result.add(jsonArray);
+                        arrays.add(list);
                     } catch (Exception e) {
-                        logger.error("sql语句：" + s);
+                        logger.error("sql执行异常：" + s);
                     }
                 }
             }
-
+            result.put(CRUD.ITEMS, arrays);
         }
 
         return result;
