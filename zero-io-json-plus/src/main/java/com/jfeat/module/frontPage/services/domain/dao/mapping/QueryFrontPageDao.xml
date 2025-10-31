@@ -11,6 +11,7 @@
         t_front_page.content, t_front_page.appid,
         t_front_page.json_name AS jsonName,
         t_front_page.json_path AS jsonPath,
+        t_front_page.channel_no AS channelNo,
         t_front_page.template_status AS templateStatus,
         t_front_page.create_time AS createTime,
         t_front_page.update_time AS updateTime,
@@ -71,6 +72,10 @@
         </if>
         <if test="record.appid != null and record.appid!= ''">
             AND t_front_page.appid LIKE CONCAT('%',#{record.appid},'%')
+        </if>
+
+        <if test="record.channelNo != null and record.channelNo!= ''">
+            AND t_front_page.channel_no = #{record.channelNo}
         </if>
 
 

@@ -1,18 +1,17 @@
 
 package com.jfeat.module.frontPage.api.app;
 
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jfeat.am.common.annotation.Permission;
 import com.jfeat.crud.base.annotation.BusinessLog;
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
 import com.jfeat.crud.base.tips.SuccessTip;
 import com.jfeat.crud.base.tips.Tip;
-import com.jfeat.module.frontPage.api.permission.FrontPagePermission;
 import com.jfeat.module.frontPage.services.domain.dao.QueryFrontPageDao;
 import com.jfeat.module.frontPage.services.domain.model.FrontPageRecord;
 import com.jfeat.module.frontPage.services.domain.service.FrontPageService;
+import com.jfeat.module.frontPage.services.gen.persistence.dao.FrontPageMapper;
 import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,7 +22,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +35,7 @@ import java.util.List;
  */
 @RestController
 @Api("FrontPage")
-@RequestMapping("/api/u/frontPage/frontPages")
+@RequestMapping({"/api/frontPage"})
 public class AppFrontPageEndpoint {
 
     @Resource
@@ -46,9 +44,12 @@ public class AppFrontPageEndpoint {
     @Resource
     QueryFrontPageDao queryFrontPageDao;
 
+    @Resource
+    FrontPageMapper frontPageMapper;
+
 
     @BusinessLog(name = "FrontPage", value = "create FrontPage")
-    @PostMapping
+    @PostMapping("/frontPages")
     @ApiOperation(value = "新建 FrontPage", response = FrontPage.class)
     public Tip createFrontPage(@RequestBody FrontPage entity) {
         Integer affected = 0;
@@ -61,14 +62,14 @@ public class AppFrontPageEndpoint {
         return SuccessTip.create(affected);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/frontPages/{id}")
     @ApiOperation(value = "查看 FrontPage", response = FrontPage.class)
     public Tip getFrontPage(@PathVariable Long id) {
         return SuccessTip.create(frontPageService.queryMasterModel(queryFrontPageDao, id));
     }
 
     @BusinessLog(name = "FrontPage", value = "update FrontPage")
-    @PutMapping("/{id}")
+    @PutMapping("/frontPages/{id}")
     @ApiOperation(value = "修改 FrontPage", response = FrontPage.class)
     public Tip updateFrontPage(@PathVariable Long id, @RequestBody FrontPage entity) {
         entity.setId(id);
@@ -76,20 +77,20 @@ public class AppFrontPageEndpoint {
     }
 
     @BusinessLog(name = "FrontPage", value = "delete FrontPage")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/frontPages/{id}")
     @ApiOperation("删除 FrontPage")
     public Tip deleteFrontPage(@PathVariable Long id) {
         return SuccessTip.create(frontPageService.deleteMaster(id));
     }
 
     @ApiOperation(value = "FrontPage 列表信息", response = FrontPageRecord.class)
-    @GetMapping
+    @GetMapping("/frontPages")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", dataType = "Integer"),
             @ApiImplicitParam(name = "pageSize", dataType = "Integer"),
             @ApiImplicitParam(name = "search", dataType = "String"),
             @ApiImplicitParam(name = "id", dataType = "Long"),
-            @ApiImplicitParam(name = "count", dataType = "String"),
+            @ApiImplicitParam(name = "pageId", dataType = "String"),
             @ApiImplicitParam(name = "userId", dataType = "Long"),
             @ApiImplicitParam(name = "title", dataType = "String"),
             @ApiImplicitParam(name = "notes", dataType = "String"),
@@ -111,7 +112,7 @@ public class AppFrontPageEndpoint {
                                   // end tag
                                   @RequestParam(name = "search", required = false) String search,
 
-                                  @RequestParam(name = "count", required = false) String pageId,
+                                  @RequestParam(name = "pageId", required = false) String pageId,
 
                                   @RequestParam(name = "userId", required = false) Long userId,
 
@@ -174,6 +175,32 @@ public class AppFrontPageEndpoint {
         page.setRecords(frontPagePage);
 
         return SuccessTip.create(page);
+    }
+
+    @GetMapping("/by/channel/{channelNo}")
+    @ApiOperation(value = "指定渠道编号查询，返回唯一页面，多个记录报错", response = FrontPage.class)
+    public Tip getByChannelNo(@PathVariable String channelNo) {
+        List<FrontPage> list = frontPageMapper.selectList(new QueryWrapper<FrontPage>().eq("channel_no", channelNo));
+        if (list == null || list.isEmpty()) {
+            return SuccessTip.create(null);
+        }
+        if (list.size() > 1) {
+            throw new BusinessException(BusinessCode.BadRequest.getCode(), "指定渠道编号查询到多个页面，请保证唯一性");
+        }
+        return SuccessTip.create(list.get(0));
+    }
+
+    @GetMapping("/by/page/{pageId}")
+    @ApiOperation(value = "指定页面ID查询，返回唯一页面，多个记录报错", response = FrontPage.class)
+    public Tip getByPageId(@PathVariable String pageId) {
+        List<FrontPage> list = frontPageMapper.selectList(new QueryWrapper<FrontPage>().eq("page_id", pageId));
+        if (list == null || list.isEmpty()) {
+            return SuccessTip.create(null);
+        }
+        if (list.size() > 1) {
+            throw new BusinessException(BusinessCode.BadRequest.getCode(), "指定页面ID查询到多个页面，请保证唯一性");
+        }
+        return SuccessTip.create(list.get(0));
     }
 
 

@@ -53,6 +53,9 @@ public class FrontPage extends Model<FrontPage> {
     @ApiModelProperty(value = "appid")
     private String appid;
 
+    @ApiModelProperty(value = "渠道编号")
+    private String channelNo;
+
     @ApiModelProperty(value = "json文件名")
     private String jsonName;
 
@@ -193,6 +196,14 @@ public class FrontPage extends Model<FrontPage> {
     public FrontPage setAppid(String appid) {
         this.appid = appid;
         return this;
+    }
+
+    public String getChannelNo() {
+        return channelNo;
+    }
+
+    public void setChannelNo(String channelNo) {
+        this.channelNo = channelNo;
     }
 
     public String getJsonName() {

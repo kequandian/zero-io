@@ -1,0 +1,142 @@
+### FrontPage APIs - REST Client tests
+### Usage: Open in IDE REST Client, set HOST below or use environment
+
+@HOST = http://192.168.3.105
+@HOST = http://localhost:8080
+
+@channelNo = Songto1
+@pageId = 5678
+@MODULE_TYPE = home
+@ITEM_MODULE_NAME = banner
+
+### 1) Query all pages (pagination optional)
+GET {{HOST}}/api/adm/frontPage/frontPages?pageNum=1&pageSize=10
+Accept: application/json
+
+### 2) Query pages by channelNo
+GET {{HOST}}/api/adm/frontPage/frontPages?pageNum=1&pageSize=10&pageId=4567
+Accept: application/json
+
+### 2) Query pages by channelNo
+GET {{HOST}}/api/adm/frontPage/frontPages?pageNum=1&pageSize=10&channelNo={{channelNo}}
+Accept: application/json
+
+### 3) App 前端页面 FrontPage - 新建
+POST {{HOST}}/api/frontPage/frontPages
+Content-Type: application/json
+Accept: application/json
+
+{
+  "pageName": "首页A",
+  "pageId": "HOME_A",
+  "userId": 1,
+  "title": "首页配置A",
+  "notes": "备注示例",
+  "content": "{\"layout\":\"grid\"}",
+  "appid": "app-001",
+  "channelNo": "{{channelNo}}",
+  "jsonName": "home_a.json",
+  "jsonPath": "/pages/home/home_a.json",
+  "type": "home",
+  "moduleName": "banner"
+}
+
+### 4) App 前端页面 FrontPage - 查看详情
+GET {{HOST}}/api/frontPage/frontPages/1
+Accept: application/json
+
+### 指定渠道编号查询,只返回唯一页面实体数据，查询结果为多个页面报错
+GET {{HOST}}/api/frontPage/by/channel/{{channelNo}}
+Accept: application/json
+
+### 指定页面ID查询,只返回唯一页面实体数据，查询结果为多个页面报错
+GET {{HOST}}/api/frontPage/by/page/{{pageId}}
+Accept: application/json
+
+
+
+### 5) App 前端页面 FrontPage - 修改
+PUT {{HOST}}/api/frontPage/frontPages/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "首页配置A-更新",
+  "content": "{\"layout\":\"list\"}"
+}
+
+### 6) App 前端页面 FrontPage - 删除
+DELETE {{HOST}}/api/frontPage/frontPages/1
+Accept: application/json
+
+### 7) App 前端页面 FrontPage - 列表查询（含筛选/排序）
+GET {{HOST}}/api/frontPage/frontPages?pageNum=1&pageSize=10&search=首页&type=home&orderBy=update_time&sort=DESC&moduleName=banner
+Accept: application/json
+
+### 8) Adm 后台 FrontPage - 新建（需管理员权限）
+POST {{HOST}}/api/adm/frontPage/frontPages
+Content-Type: application/json
+Accept: application/json
+
+{
+  "pageName": "后台页面B",
+  "pageId": "ADM_HOME_B",
+  "userId": 1,
+  "title": "后台首页B",
+  "notes": "后台备注",
+  "content": "{\"layout\":\"grid\"}",
+  "appid": "app-001",
+  "channelNo": "{{channelNo}}",
+  "jsonName": "adm_home_b.json",
+  "jsonPath": "/pages/home/adm_home_b.json"
+}
+
+### 9) Adm 后台 FrontPage - 查看详情（需管理员权限）
+GET {{HOST}}/api/adm/frontPage/frontPages/1
+Accept: application/json
+
+### 10) Adm 后台 FrontPage - 修改（需管理员权限）
+PUT {{HOST}}/api/adm/frontPage/frontPages/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "后台首页B-更新",
+  "content": "{\"layout\":\"list\"}"
+}
+
+### 11) Adm 后台 FrontPage - 删除（需管理员权限）
+DELETE {{HOST}}/api/adm/frontPage/frontPages/1
+Accept: application/json
+
+### 12) Adm 后台 FrontPage - 列表查询（含 channelNo）
+GET {{HOST}}/api/adm/frontPage/frontPages?pageNum=1&pageSize=10&channelNo={{channelNo}}&search=首页&orderBy=update_time&sort=DESC
+Accept: application/json
+
+### 13) Adm 页面模块 FrontPageModuleInfo - 列表查询
+GET {{HOST}}/api/adm/frontPageModuleInfo?pageNum=1&pageSize=10&search=模块&orderBy=id&sort=DESC&moduleName=banner&frontPageId=1
+Accept: application/json
+
+### 14) Adm 页面模块 FrontPageModuleInfo - 获取模块类型列表
+GET {{HOST}}/api/adm/frontPageModuleInfo/pageList?moduleType={{MODULE_TYPE}}
+Accept: application/json
+
+### 15) Adm 页面模块 FrontPageModuleInfo - 同步模块数据
+PUT {{HOST}}/api/adm/frontPageModuleInfo/synchronizationData?moduleType={{MODULE_TYPE}}
+Accept: application/json
+
+### 16) App 页面模块 ModuleInfo - 列表查询（默认同步）
+GET {{HOST}}/api/frontPage/moduleInfo?pageNum=1&pageSize=10&moduleType={{MODULE_TYPE}}&itemModuleName={{ITEM_MODULE_NAME}}&search=模块&orderBy=id&sort=DESC
+Accept: application/json
+
+### 17) App 页面模块 ModuleInfo - 列表查询（关闭同步）
+GET {{HOST}}/api/frontPage/moduleInfo?pageNum=1&pageSize=10&moduleType={{MODULE_TYPE}}&synchronization=false
+Accept: application/json
+
+### 18) App 页面模块 ModuleInfo - 获取模块类型列表
+GET {{HOST}}/api/frontPage/moduleInfo/pageList?moduleType={{MODULE_TYPE}}
+Accept: application/json
+
+### 19) App 页面模块 ModuleInfo - 批量刷新所有类型字段
+PUT {{HOST}}/api/frontPage/moduleInfo/updateAllType
+Accept: application/json

@@ -1,8 +1,5 @@
 package com.jfeat.module.frontPage.services.gen.crud.model;
-// this is serviceModel.java.vm
 
-
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.jfeat.module.frontPage.services.gen.persistence.model.FrontPageModuleInfo;
 
 import java.util.Map;

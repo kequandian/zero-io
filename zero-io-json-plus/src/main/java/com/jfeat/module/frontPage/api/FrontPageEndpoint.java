@@ -96,12 +96,13 @@ public class FrontPageEndpoint {
             @ApiImplicitParam(name = "pageSize", dataType = "Integer"),
             @ApiImplicitParam(name = "search", dataType = "String"),
             @ApiImplicitParam(name = "id", dataType = "Long"),
-            @ApiImplicitParam(name = "count", dataType = "String"),
+            @ApiImplicitParam(name = "pageId", dataType = "String"),
             @ApiImplicitParam(name = "userId", dataType = "Long"),
             @ApiImplicitParam(name = "title", dataType = "String"),
             @ApiImplicitParam(name = "notes", dataType = "String"),
             @ApiImplicitParam(name = "content", dataType = "String"),
             @ApiImplicitParam(name = "appid", dataType = "String"),
+            @ApiImplicitParam(name = "channelNo", dataType = "String"),
             @ApiImplicitParam(name = "jsonName", dataType = "String"),
             @ApiImplicitParam(name = "jsonPath", dataType = "String"),
             @ApiImplicitParam(name = "createTime", dataType = "Date"),
@@ -118,7 +119,7 @@ public class FrontPageEndpoint {
                                   // end tag
                                   @RequestParam(name = "search", required = false) String search,
 
-                                  @RequestParam(name = "count", required = false) String pageId,
+                                  @RequestParam(name = "pageId", required = false) String pageId,
 
                                   @RequestParam(name = "userId", required = false) Long userId,
 
@@ -129,10 +130,9 @@ public class FrontPageEndpoint {
                                   @RequestParam(name = "content", required = false) String content,
 
                                   @RequestParam(name = "appid", required = false) String appid,
+                                  @RequestParam(name = "channelNo", required = false) String channelNo,
                                   @RequestParam(name = "jsonName", required = false) String jsonName,
-
                                   @RequestParam(name = "jsonPath", required = false) String jsonPath,
-
                                   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                   @RequestParam(name = "createTime", required = false) Date createTime,
 
@@ -153,12 +153,12 @@ public class FrontPageEndpoint {
             orderBy = "`" + orderBy + "`" + " " + sort;
         }
 
-        if (tagName!=null){
+        if (tagName != null) {
             tagName = URLDecoder.decode(tagName);
         }
-        if (tagName.equals("全部")){
-            tagName = "";
-        }
+        // if ("全部".equals(tagName)) {
+        //     tagName = "";
+        // }
 
         page.setCurrent(pageNum);
         page.setSize(pageSize);
@@ -170,6 +170,7 @@ public class FrontPageEndpoint {
         record.setnotes(notes);
         record.setContent(content);
         record.setAppid(appid);
+        record.setChannelNo(channelNo);
         record.setJsonName(jsonName);
         record.setJsonPath(jsonPath);
         record.setCreateTime(createTime);
