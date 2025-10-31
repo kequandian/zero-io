@@ -45,12 +45,27 @@ Accept: application/json
 GET {{HOST}}/api/frontPage/frontPages/1
 Accept: application/json
 
-### 指定渠道编号查询,只返回唯一页面实体数据，查询结果为多个页面报错
-GET {{HOST}}/api/frontPage/by/channel/{{channelNo}}
-Accept: application/json
+# ### 指定渠道编号查询,只返回唯一页面实体数据，查询结果为多个页面报错
+# GET {{HOST}}/api/frontPage/by/channel/{{channelNo}}
+# Accept: application/json
 
 ### 指定页面ID查询,只返回唯一页面实体数据，查询结果为多个页面报错
 GET {{HOST}}/api/frontPage/by/page/{{pageId}}
+Accept: application/json
+
+
+###
+@clientId = 1234567890
+@clientSecret = 1234567890
+
+### 获取页面内容 直接通过页面ID查询 (内部服务调用, 通过查询参数 clientId, clientSecret签权)
+### 仅返回页面内容,不返回页面实体数据，页面内容需转为json格式
+GET {{HOST}}/api/rpc/frontPage/getPageContent/{{pageId}}?clientId={{clientId}}&clientSecret={{clientSecret}}
+Accept: application/json
+
+### 获取页面内容 通过渠道编号查询 (内部服务调用, 通过查询参数 clientId, clientSecret签权)
+### 仅返回页面内容,不返回页面实体数据，页面内容需转为json格式
+GET {{HOST}}/api/rpc/frontPage/getPageContent/by/{{channelNo}}?clientId={{clientId}}&clientSecret={{clientSecret}}
 Accept: application/json
 
 

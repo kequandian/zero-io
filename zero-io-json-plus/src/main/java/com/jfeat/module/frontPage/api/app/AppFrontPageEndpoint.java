@@ -177,18 +177,18 @@ public class AppFrontPageEndpoint {
         return SuccessTip.create(page);
     }
 
-    @GetMapping("/by/channel/{channelNo}")
-    @ApiOperation(value = "指定渠道编号查询，返回唯一页面，多个记录报错", response = FrontPage.class)
-    public Tip getByChannelNo(@PathVariable String channelNo) {
-        List<FrontPage> list = frontPageMapper.selectList(new QueryWrapper<FrontPage>().eq("channel_no", channelNo));
-        if (list == null || list.isEmpty()) {
-            return SuccessTip.create(null);
-        }
-        if (list.size() > 1) {
-            throw new BusinessException(BusinessCode.BadRequest.getCode(), "指定渠道编号查询到多个页面，请保证唯一性");
-        }
-        return SuccessTip.create(list.get(0));
-    }
+    // @GetMapping("/by/channel/{channelNo}")
+    // @ApiOperation(value = "指定渠道编号查询，返回唯一页面，多个记录报错", response = FrontPage.class)
+    // public Tip getByChannelNo(@PathVariable String channelNo) {
+    //     List<FrontPage> list = frontPageMapper.selectList(new QueryWrapper<FrontPage>().eq("channel_no", channelNo));
+    //     if (list == null || list.isEmpty()) {
+    //         return SuccessTip.create(null);
+    //     }
+    //     if (list.size() > 1) {
+    //         throw new BusinessException(BusinessCode.BadRequest.getCode(), "指定渠道编号查询到多个页面，请保证唯一性");
+    //     }
+    //     return SuccessTip.create(list.get(0));
+    // }
 
     @GetMapping("/by/page/{pageId}")
     @ApiOperation(value = "指定页面ID查询，返回唯一页面，多个记录报错", response = FrontPage.class)
