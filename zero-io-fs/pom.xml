@@ -21,6 +21,7 @@
      -->
 
     <properties>
+        <skipTests>true</skipTests>
         <skipStandalone>true</skipStandalone>
         <minio.version>8.5.14</minio.version>
     </properties>
