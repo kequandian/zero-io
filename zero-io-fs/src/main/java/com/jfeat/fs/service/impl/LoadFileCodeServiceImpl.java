@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -50,32 +51,39 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             .expireAfterAccess(60, TimeUnit.SECONDS) //当缓存项在指定的时间段内没有被读或写就会被回收。
             .build();
 
-    @Value("${io.minio.export-endpoint}")
+    @Value("${io.minio.export-endpoint:}")
     private String exportEndpoint;
-    @Value("${io.minio.endpoint}")
+    @Value("${io.minio.endpoint:}")
     private String minioUrl;
-    @Value("${io.minio.access-key}")
+    @Value("${io.minio.access-key:}")
     private String minioAccessKey;
-    @Value("${io.minio.secret-key}")
+    @Value("${io.minio.secret-key:}")
     private String minioSecretKey;
+
+    @Autowired
+    private com.jfeat.fs.properties.FSProperties FSProperties;
 
     private static MinioClient minioClient = null;
 
     @PostConstruct
     public void init() {
         try {
+            // 当 io.minio 配置项缺失时，跳过 MinIO 初始化，改为使用本地文件系统
+            if (StringUtils.isEmpty(minioUrl) || StringUtils.isEmpty(minioAccessKey) || StringUtils.isEmpty(minioSecretKey)) {
+                logger.info("minio config missing, disable minio and fallback to filesystem");
+                minioClient = null;
+                return;
+            }
             logger.info("init minio start minioUrl={},minioAccessKey={},minioSecretKey={}", minioUrl, minioAccessKey, minioSecretKey);
-            minioClient =  MinioClient.builder()
+            minioClient = MinioClient.builder()
                     .endpoint(minioUrl)
                     .credentials(minioAccessKey, minioSecretKey)
                     .build();
-            if(minioClient == null) {
-                throw new BusinessException(BusinessCode.BadRequest,  "minio client 初始化失败");
-            }
             logger.info("init minio success");
         } catch (Exception e) {
             logger.error("init minio fail={}", e.getMessage());
-            throw e;
+            // 初始化失败则禁用 minio，走本地文件系统
+            minioClient = null;
         }
     }
 
@@ -348,10 +356,32 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         // 考虑存储数据库
         logger.info("file upload  realFileName={} fileName:{} module:{} userId:{} useOriginName:{}", realFileName, fileName, module, userId, useOriginName);
         try {
-            return upload(file.getInputStream(),bucketName,objectPath,fileName,file.getContentType());
+            if (minioClient != null) {
+                return upload(file.getInputStream(), bucketName, objectPath, fileName, file.getContentType());
+            }
+            // 无 MinIO 配置时，走本地文件系统
+            String rootPath = FSProperties.getFileUploadPath();
+            File dir = new File(rootPath, bucketName + File.separator + objectPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File target = new File(dir, fileName);
+            FileUtils.copyInputStreamToFile(file.getInputStream(), target);
+
+            String fullPath = "/" + bucketName + "/" + objectPath + fileName;
+            String host = FSProperties.getFileHost();
+            String prefix = StringUtils.isEmpty(host) ? "" : (host.startsWith("/") ? host : "/" + host);
+
+            UploadResp resp = new UploadResp();
+            resp.setContentType(file.getContentType());
+            resp.setFileSize((int) file.getSize());
+            resp.setFileName(fileName);
+            resp.setFullPath(fullPath);
+            resp.setFileUrl(prefix + fullPath);
+            return resp;
         } catch (Exception e) {
             logger.error("upload file fail:{}", e.getMessage());
-            throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
+            throw new BusinessException(BusinessCode.BadRequest, "上传文件失败！");
         }
     }
 
@@ -386,10 +416,32 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         // 考虑存储数据库
         logger.info("file upload fileName:{} module:{} userId:{}", fileName, module, userId);
         try {
-            return upload(dataInputStream, bucketName, objectPath, fileName, contentType);
+            if (minioClient != null) {
+                return upload(dataInputStream, bucketName, objectPath, fileName, contentType);
+            }
+            // 无 MinIO 配置时，走本地文件系统
+            String rootPath = FSProperties.getFileUploadPath();
+            File dir = new File(rootPath, bucketName + File.separator + objectPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File target = new File(dir, fileName);
+            FileUtils.copyInputStreamToFile(dataInputStream, target);
+
+            String fullPath = "/" + bucketName + "/" + objectPath + fileName;
+            String host = FSProperties.getFileHost();
+            String prefix = StringUtils.isEmpty(host) ? "" : (host.startsWith("/") ? host : "/" + host);
+
+            UploadResp resp = new UploadResp();
+            resp.setContentType(StringUtils.isEmpty(contentType) ? "application/octet-stream" : contentType);
+            resp.setFileSize((int) target.length());
+            resp.setFileName(fileName);
+            resp.setFullPath(fullPath);
+            resp.setFileUrl(prefix + fullPath);
+            return resp;
         } catch (Exception e) {
             logger.error("upload file fail:", e);
-            throw new BusinessException(BusinessCode.BadRequest,  "上传文件失败！");
+            throw new BusinessException(BusinessCode.BadRequest, "上传文件失败！");
         }
     }
 
@@ -405,19 +457,34 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         String bucketName = bucketAndObject[0];
         String objectPath = bucketAndObject[1];
 
-        if(minioClient == null) {
-            logger.info("minio client not init: bucketName= {}, objectPath = {}", bucketName, objectPath);
-            throw new BusinessException(BusinessCode.GeneralIOError, "minio client 未初始化");
+        if (minioClient != null) {
+            // 根据objectName删除minio的数据
+            try {
+                RemoveObjectArgs removeObjectArgs = RemoveObjectArgs.builder().bucket(bucketName)
+                        .object(objectPath)
+                        .build();
+                minioClient.removeObject(removeObjectArgs);
+            } catch (Exception e) {
+                logger.error("删除minio文件失败={}", e.getMessage(), e);
+            }
+            return true;
         }
-        //根据objectName删除minio的数据
+        // 无 MinIO 配置时，删除本地文件
         try {
-            RemoveObjectArgs removeObjectArgs = RemoveObjectArgs.builder().bucket(bucketName)
-                    .object(objectPath)
-                    .build();
-            minioClient.removeObject(removeObjectArgs);
+            String rootPath = FSProperties.getFileUploadPath();
+            File target = new File(rootPath, bucketName + File.separator + objectPath);
+            if (target.exists()) {
+                boolean deleted = target.delete();
+                if (!deleted) {
+                    logger.warn("删除本地文件失败 path={}", target.getAbsolutePath());
+                }
+            } else {
+                logger.warn("本地文件不存在 path={}", target.getAbsolutePath());
+            }
+            return true;
         } catch (Exception e) {
-            logger.error("删除minio文件失败={}" , e.getMessage(), e);
+            logger.error("删除本地文件异常={}", e.getMessage(), e);
+            throw new BusinessException(BusinessCode.GeneralIOError, "删除文件失败");
         }
-        return true;
     }
 }

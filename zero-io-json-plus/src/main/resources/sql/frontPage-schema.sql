@@ -10,7 +10,7 @@ CREATE TABLE `t_front_page` (
 `content` json DEFAULT NULL COMMENT '页面配置json数据',
 `user_id` bigint DEFAULT NULL COMMENT '提交人用户id',
 `appid` varchar(50) DEFAULT 'DEFAULT' COMMENT 'appid',
-`channel_no` varchar(50) DEFAULT NULL COMMENT '渠道编号',
+`channel_no` varchar(50) DEFAULT NULL COMMENT '渠道编号[deprecated]',
 `json_name` varchar(255) DEFAULT NULL COMMENT 'json文件名',
 `json_path` varchar(255) DEFAULT NULL COMMENT 'json文件路径',
 `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

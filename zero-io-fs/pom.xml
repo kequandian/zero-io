@@ -11,8 +11,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jfeat</groupId>
     <artifactId>zero-io-fs</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
+
+    <!-- upgrade history
+        1.2.0 from 1.1.0 minio is optional, if no minio configed, default to local file system
+        @when 2025-11-11
+
+     -->
 
     <properties>
         <skipStandalone>true</skipStandalone>
