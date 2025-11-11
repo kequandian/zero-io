@@ -14,8 +14,4 @@ io:
     export-endpoint: "http://202.189.9.147:9000"
     endpoint: "http://202.189.9.147:9000"
     access-key: "admin"
-    secret-key: "jfeat.com.24"
-
----
-
-
+    secret-key: "111111"
