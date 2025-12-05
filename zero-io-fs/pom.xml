@@ -17,7 +17,6 @@
     <!-- upgrade history
         1.2.0 from 1.1.0 minio is optional, if no minio configed, default to local file system
         @when 2025-11-11
-
      -->
 
     <properties>

@@ -30,14 +30,13 @@ public interface LoadFileCodeService {
      * @param file
      * @param fileHost
      * @param fileSavePath
-     * @param bucket
+     * @param bucket  ## 可以由appid决定存储位置, 如house
      * @return
      */
-    FileInfo uploadFile(MultipartFile file, String fileSavePath, String bucket, String appid, String fileHost) throws IOException;
+    FileInfo uploadFile(MultipartFile file, String fileSavePath, String bucket/*, String fileHost*/) throws IOException;
 
 
-    /**
-     * 上传图片数据流
+    /**     * 上传图片数据流
      * @param base64Data
      * @param fileSavePath
      * @param bucket

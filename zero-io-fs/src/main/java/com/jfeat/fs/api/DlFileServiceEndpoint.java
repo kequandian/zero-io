@@ -26,9 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+@Deprecated  /**不再需要下载功能，通常由网关提供url */
 @Api(value = "fs-download")
 @RestController
-public class FileServiceDlEndpoint {
+public class DlFileServiceEndpoint {
 
     @Autowired
     FSProperties FSProperties;

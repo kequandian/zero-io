@@ -4,8 +4,7 @@
 
 ```yaml
 io:
-   file-upload-path: /images
-   file-host: images
+   file-upload-path: /app/upload
 ```
 
 #### `docker-compose.yml` 配置文件
@@ -19,7 +18,7 @@ services:
     image: adoptopenjdk:11-jdk-hotspot
     volumes: 
       - /etc/localtime:/etc/localtime:ro
-	  - ./api/zero-io-fs-1.0.0-standalone.jar:/webapps/app.jar
+	    - ./api/zero-io-fs-1.0.0-standalone.jar:/webapps/app.jar
       - ./images:/images
     logging:
       driver: "json-file"

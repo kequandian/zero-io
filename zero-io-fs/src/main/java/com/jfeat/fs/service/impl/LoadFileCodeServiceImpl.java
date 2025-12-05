@@ -33,6 +33,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+// samples
+// public static void main(String[] args){
+//     String[] imageExt = new String[] {"jpg", "jpeg", "png"};
+//     String[] zipExt = new String[] {"zip", "gzip", "bz2", "tar", "7z", "rar"};
+//     String[] docExt = new String[] {"doc", "docx", "ppt", "xlsx", "xls"};
+
+//     System.out.println(String.join(",", String.join(",", imageExt), String.join(",", zipExt), String.join(",", docExt)));
+// }
+
 /**
  * Created by jackyhuang on 2018/1/3.
  */
@@ -44,6 +53,9 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
     final static String DEFAULT_BUCKET_IMAGES = "images";
     final static String DEFAULT_BUCKET_ATTACHMENTS = "attachments";
     final static String DEFAULT_BUCKET_DOCS = "docs";
+    final static String DEFAULT_BUCKET_VIDEOS = "videos";
+    final static String DEFAULT_BUCKET_AUDIO = "audio";
+    final static String DEFAULT_BUCKET_ICON = "icon";
 
     private static Cache<String, String> cache = CacheBuilder
             .newBuilder()
@@ -110,52 +122,62 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         }
     }
 
-    // public static void main(String[] args){
-    //     String[] imageExt = new String[] {"jpg", "jpeg", "png"};
-    //     String[] zipExt = new String[] {"zip", "gzip", "bz2", "tar", "7z", "rar"};
-    //     String[] docExt = new String[] {"doc", "docx", "ppt", "xlsx", "xls"};
 
-    //     System.out.println(String.join(",", String.join(",", imageExt), String.join(",", zipExt), String.join(",", docExt)));
-    // }
-
+    /**
+     * @when 2025-12, 增加对上传文件的类类型分类, 自动分类
+     * 文件保存格式  /upload/house/<images,docs,audio,videos,icon,attachments>/2025/uuid.jpg, attachments, docs
+     * 
+     * fileHost @deprecated, 统一由上传的文件类型决定
+     */
 
     @Override
-    public FileInfo uploadFile(MultipartFile file, String fileSavePath, String bucket, String appid, String fileHost) throws IOException {
+    public FileInfo uploadFile(MultipartFile file, String fileSavePath, String bucket /**, String fileHost*/) throws IOException {
         String originalFileName = file.getOriginalFilename();
         String extensionName = FilenameUtils.getExtension(originalFileName);
         if(StringUtils.isEmpty(extensionName)){
             throw new BusinessException(BusinessCode.BadRequest,  "上传文件需要带后缀文件类型！");
         }
 
-        // if(extensionName != null){
-        //     if(extensionName.equals("exe")||extensionName.equals("java")||extensionName.equals("jsp")||extensionName.equals("php")||extensionName.equals("asp")){
-        //         throw new BusinessException(BusinessCode.BadRequest,  "文件类型有误! 不能为：" + extensionName +"类型的文件");
-        //     }
-        // }
+        String prefixHost = "";   //用于生成最终的 url 前缀，依据文件后缀类型决定
+
+        String lowerExt = extensionName.toLowerCase();
         {
             String[] imageExt = new String[] {"jpg", "jpeg", "png"};
             String[] zipExt = new String[] {"zip", "gzip", "bz2", "tar", "7z", "rar"};
             String[] docExt = new String[] {"doc", "docx", "xls", "xlsx", "ppt","pptx"};
-
-            if(Stream.of(imageExt).anyMatch(ext->ext.equals(extensionName)) || Stream.of(zipExt).anyMatch(ext->ext.equals(extensionName)) || Stream.of(docExt).anyMatch(ext->ext.equals(extensionName))){
+            String[] videoExt = new String[] {"mp4", "avi", "mov", "wmv", "flv", "mkv"};
+            String[] audioExt = new String[] {"mp3", "wav", "aac", "flac"};
+            String[] iconExt = new String[] {"ico", "icon", "icns"};
+            
+            if(Stream.of(imageExt).anyMatch(ext->ext.equals(lowerExt)) 
+                || Stream.of(zipExt).anyMatch(ext->ext.equals(lowerExt)) 
+                || Stream.of(docExt).anyMatch(ext->ext.equals(lowerExt))
+                || Stream.of(videoExt).anyMatch(ext->ext.equals(lowerExt))
+                || Stream.of(audioExt).anyMatch(ext->ext.equals(lowerExt))
+                || Stream.of(iconExt).anyMatch(ext->ext.equals(lowerExt))
+            ){
                 // pass
             }else{
-                throw new BusinessException(BusinessCode.BadRequest,  "仅支持有限的文件类型：" + String.join(",", String.join(",", imageExt), String.join(",", zipExt), String.join(",", docExt)));
+                throw new BusinessException(BusinessCode.BadRequest, "仅支持有限的文件类型：" + String.join(",", String.join(",", imageExt), String.join(",", zipExt), String.join(",", docExt)));
             }
 
-            if(StringUtils.isEmpty(bucket)) {
-                if (Stream.of(imageExt).anyMatch(ext -> ext.equals(extensionName))) {
-                    bucket = DEFAULT_BUCKET_IMAGES;
-                } else if (Stream.of(zipExt).anyMatch(ext -> ext.equals(extensionName))) {
-                    bucket = DEFAULT_BUCKET_ATTACHMENTS;
-                } else if (Stream.of(docExt).anyMatch(ext -> ext.equals(extensionName))) {
-                    bucket = DEFAULT_BUCKET_DOCS;
-                }
+            if (Stream.of(imageExt).anyMatch(ext -> ext.equals(lowerExt))) {
+                prefixHost = DEFAULT_BUCKET_IMAGES;
+            } else if (Stream.of(zipExt).anyMatch(ext -> ext.equals(lowerExt))) {
+                prefixHost = DEFAULT_BUCKET_ATTACHMENTS;
+            } else if (Stream.of(docExt).anyMatch(ext -> ext.equals(lowerExt))) {
+                prefixHost = DEFAULT_BUCKET_DOCS;
+            } else if (Stream.of(videoExt).anyMatch(ext -> ext.equals(lowerExt))) {
+                prefixHost = DEFAULT_BUCKET_VIDEOS;
+            } else if (Stream.of(audioExt).anyMatch(ext -> ext.equals(lowerExt))) {
+                prefixHost = DEFAULT_BUCKET_AUDIO;
+            } else if (Stream.of(iconExt).anyMatch(ext -> ext.equals(lowerExt))) {
+                prefixHost = DEFAULT_BUCKET_ICON;
             }
         }
 
         Long fileSize = file.getSize();
-        String fileName = UUID.randomUUID() + "." + extensionName;
+        String fileName = UUID.randomUUID() + "." + lowerExt;
         // just ensure fileSavePath exists
         {
             File fileSaveFile = new File(fileSavePath);
@@ -165,7 +187,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         }
 
         // check bucket exists, cos's required authorized.
-        if ((!StringUtils.isEmpty(bucket)) || (!StringUtils.isEmpty(appid))) {
+        if ((!StringUtils.isEmpty(bucket))) {
             String targetPath = String.join(File.separator, fileSavePath, bucket);
             File bucketFile = new File(targetPath);
             Assert.isTrue(bucketFile.exists(), "path from (X-FS-BUCKET) not exists: " + bucketFile.getPath());
@@ -175,13 +197,14 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         String currentYear = new SimpleDateFormat("yyyy").format(new Date());
         // just ensure targetFilePath exists
         {
-            String targetFilePath = String.join(File.separator, fileSavePath, bucket, appid, currentYear);
+            String targetFilePath = String.join(File.separator, fileSavePath, bucket, currentYear);
             File tmpFileSaveFile = new File(targetFilePath);
             if (!tmpFileSaveFile.exists()) {
                 tmpFileSaveFile.mkdirs();
             }
         }
-        File targetFile = new File(String.join(File.separator, fileSavePath, bucket, appid, currentYear, fileName));
+        
+        File targetFile = new File(String.join(File.separator, fileSavePath, bucket, prefixHost, currentYear, fileName));
 
         //boolean readable = target.setReadable(true);
         //if(readable){
@@ -192,11 +215,14 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
                 throw new BusinessException(BusinessCode.UploadFileError, "file is not readable");
             }*/
 
-        // get relative path
-        String relativePath = targetFile.getAbsolutePath().substring(new File("./").getAbsolutePath().length() - 1);
-        String pathFileName = String.join(File.separator, appid, currentYear, fileName);
-        return FileInfo.create(fileHost, bucket, pathFileName, extensionName, originalFileName, fileSize, relativePath);
+        // handle file url, do not include fileSavePath and bucket
+         String fileUrl = String.join(File.separator, prefixHost, currentYear, fileName);
+         String relativePath = String.join(File.separator, bucket, prefixHost, currentYear, fileName);
+
+        return FileInfo.create(fileUrl, bucket, fileName, extensionName, originalFileName, fileSize, relativePath);
     }
+
+
 
     @Override
     public FileInfo upload64(String base64Data, Boolean blur, String fileSavePath, String bucket, String appid, String fileHost) throws IOException{
@@ -250,7 +276,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             logger.info("blurry file thumb to: {}", blurryThumbFile.getAbsoluteFile());
         }
 
-        return FileInfo.create(fileHost, pictureName, blurryName);
+        return FileInfo.create(fileHost, pictureName, fileHost, blurryName);
     }
 
     /**
@@ -428,6 +454,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
             File target = new File(dir, fileName);
             FileUtils.copyInputStreamToFile(dataInputStream, target);
 
+            // handle file url
             String fullPath = "/" + bucketName + "/" + objectPath + fileName;
             String host = FSProperties.getFileHost();
             String prefix = StringUtils.isEmpty(host) ? "" : (host.startsWith("/") ? host : "/" + host);
