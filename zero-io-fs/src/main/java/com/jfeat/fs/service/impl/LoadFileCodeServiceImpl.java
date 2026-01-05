@@ -131,7 +131,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
      */
 
     @Override
-    public FileInfo uploadFile(MultipartFile file, String fileSavePath, String bucket /**, String fileHost*/) throws IOException {
+    public FileInfo uploadFile(MultipartFile file, String fileSavePath, String bucket) throws IOException {
         String originalFileName = file.getOriginalFilename();
         String extensionName = FilenameUtils.getExtension(originalFileName);
         if(StringUtils.isEmpty(extensionName)){
@@ -190,7 +190,7 @@ public class LoadFileCodeServiceImpl implements LoadFileCodeService {
         if ((!StringUtils.isEmpty(bucket))) {
             String targetPath = String.join(File.separator, fileSavePath, bucket);
             File bucketFile = new File(targetPath);
-            Assert.isTrue(bucketFile.exists(), "path from (X-FS-BUCKET) not exists: " + bucketFile.getPath());
+            Assert.isTrue(bucketFile.exists(), "bucket not exists: " + bucketFile.getPath());
         }
 
         // get current year
