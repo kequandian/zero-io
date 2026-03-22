@@ -1,12 +1,51 @@
 # 微信小程序发送订阅消息工具<br>zero-io-wechat-message
 
 ---
-> 注意！  
-> 该工具使用微信官方api，官方修改了api后可能会失效。  
-> 在 src/main/resource/application.properties 下存放着微信官方发送订阅消息的api路径。  
-> 别的项目引用该工具后会以别的项目中的application.properties为优先，所以请复制本工具中的properties中的内容添加到您的项目properties中即可
+> 注意！
+> 该工具使用微信官方api，官方修改了api后可能会失效。
+> 在 src/main/resource/application.yml 下存放着微信官方发送订阅消息的api路径。
+> 别的项目引用该工具后会以别的项目中的application.yml为优先，所以请复制本工具中的yml中的内容添加到您的项目yml中即可
 
 [微信官方说明文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html#%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF%E8%AF%AD%E9%9F%B3%E6%8F%90%E9%86%92)
+
+---
+## 配置说明
+
+### 必需配置
+
+在 `application.yml` 或 `application-dev.yml` 中添加以下配置：
+
+```yaml
+wechat:
+  # 获取 access_token 的 API 地址
+  getAccessToken:
+    url: "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={appid}&secret={secret}"
+  # 发送订阅消息的 API 地址
+  sendMessage:
+    url: "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={access_token}"
+```
+
+### 微信小程序凭证
+
+调用时需要传入以下参数（从微信公众平台获取）：
+
+| 参数 | 说明 | 获取位置 |
+|------|------|----------|
+| `appid` | 小程序 AppID | 微信公众平台 - 开发 - 开发管理 - 开发设置 |
+| `appSecret` | 小程序 AppSecret | 同上（需要管理员扫码确认） |
+
+### Redis 配置（用于缓存 access_token）
+
+```yaml
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+```
+
+> access_token 会被缓存到 Redis，有效期 7000 秒，避免频繁调用微信 API
 
 ---
 ## 使用说明
@@ -27,15 +66,22 @@
 <br>
 
 ### sendMessage() 所需参数：
-    * @param appAppid 小程序appid
-    * @param appSecret 小程序appSecret
-    * @param openid 用户openid
-    * @param templateId 订阅模版id
-    * @param data 模版内容
-    * @param page 跳转页面（省略则不跳转）
-    * @param miniProgramState 跳转小程序类型（可省略，默认为正式版）
-    * @param lang 进入小程序查看的语言类型（可省略，默认为中文）
-*参数获取方法请查询：[微信官方说明文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html#%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF%E8%AF%AD%E9%9F%B3%E6%8F%90%E9%86%92)*
+
+| 参数 | 说明 | 是否必填 | 默认值 | 示例 |
+|------|------|----------|--------|------|
+| `appAppid` | 小程序 AppID | 必填 | - | `"wx1234567890abcdef"` |
+| `appSecret` | 小程序 AppSecret | 必填 | - | `"abc123def456..."` |
+| `openid` | 接收消息的用户 openid | 必填 | - | `"oXYZ123..."` |
+| `templateId` | 订阅消息模板 ID | 必填 | - | `"ABC123..."` |
+| `data` | 模板内容 JSON | 必填 | - | `{"thing1": {"value": "订单内容"}}` |
+| `page` | 跳转页面路径 | 可选 | 空 | `"pages/index/index"` |
+| `miniProgramState` | 小程序类型 | 可选 | `formal` | `formal`(正式版) / `trial`(体验版) / `developer`(开发版) |
+| `lang` | 进入小程序查看的语言类型 | 可选 | `zh_CN` | `zh_CN`(简体中文) / `en_US`(英文) / `zh_HK`(繁体中文) / `zh_TW`(繁体中文) |
+
+> **注意事项：**
+> - 需要在微信公众平台配置订阅消息模板
+> - 用户需要先授权接收订阅消息
+> - *参数获取方法请查询：[微信官方说明文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html#%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF%E8%AF%AD%E9%9F%B3%E6%8F%90%E9%86%92)*
 
 <br>
 
