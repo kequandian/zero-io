@@ -1,11 +1,11 @@
 package com.jfeat.excel.model;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,18 +19,18 @@ import java.util.Map;
 public class ExportParam {
 
     // @NotNull
-    //@ApiModelProperty(value = "导出名称")
+    //@Schema(description = "导出名称")
     //String exportName;
 
-//    @ApiModelProperty(value = "导出数据来源(api url)")
+//    @Schema(description = "导出数据来源(api url)")
 //    String api;
 
-    //@ApiModelProperty(value = "导出类型, SQL=数据库方式, API=api方式")
+    //@Schema(description = "导出类型, SQL=数据库方式, API=api方式")
     //String type;
 
-//    @ApiModelProperty(value = "查询参数")
+//    @Schema(description = "查询参数")
 //    Map<String, String> search;
 
-    //@ApiModelProperty(value = "转换字典")
+    //@Schema(description = "转换字典")
     //Map<String, Map<String, String>> dict = new HashMap<>();
 }

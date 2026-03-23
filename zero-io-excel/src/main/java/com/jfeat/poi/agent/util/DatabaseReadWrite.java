@@ -7,7 +7,7 @@ import com.jfeat.poi.agent.im.request.Option;
 import com.jfeat.poi.agent.im.request.TableTarget;
 import com.jfeat.poi.agent.util.converter.ValueConverter;
 import com.jfeat.poi.agent.util.lang.ExcelException;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -811,7 +811,7 @@ public class DatabaseReadWrite {
 
                                     //为数字格式 时间戳
                                     if (isInteger(res)) {
-                                        Date date = HSSFDateUtil.getJavaDate(Double.parseDouble(res));
+                                        Date date = DateUtil.getJavaDate(Double.parseDouble(res));
                                         res = getTime(date);
                                         preparedStatementValues[j][n] = res;
                                     } else {

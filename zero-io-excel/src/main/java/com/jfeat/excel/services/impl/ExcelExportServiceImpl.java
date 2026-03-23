@@ -20,8 +20,6 @@ import io.jsonwebtoken.lang.Assert;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.mockito.asm.tree.FieldInsnNode;
-import org.mockito.internal.util.io.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +29,13 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2020/4/27.
@@ -189,7 +189,10 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         Assert.isTrue(sqlStream != null);
 
         // 逐行读取 sql文件
-        Collection<String> sqlLines = IOUtil.readLines(sqlStream);
+        Collection<String> sqlLines;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(sqlStream, StandardCharsets.UTF_8))) {
+            sqlLines = reader.lines().collect(Collectors.toList());
+        }
         // end enhance
 
         // 替换注释并构建 sql
