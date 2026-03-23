@@ -2,14 +2,12 @@ package util;
 
 import com.jfeat.AmApplication;
 import com.jfeat.wechatmessage.common.WeChatMiniProgramMessage;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * @description: TODO
@@ -18,7 +16,6 @@ import javax.annotation.Resource;
  * @date: 2023/4/24 11:18
  * @author: hhhhhtao
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = AmApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WeCahtMiniProgramMessageTest {
 
