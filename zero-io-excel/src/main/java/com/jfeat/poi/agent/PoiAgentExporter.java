@@ -1,6 +1,6 @@
 package com.jfeat.poi.agent;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.jfeat.poi.agent.util.DatabaseReadWrite;
 import com.jfeat.poi.agent.util.ExcelWriter;
 import com.jfeat.poi.agent.util.lang.ExcelException;

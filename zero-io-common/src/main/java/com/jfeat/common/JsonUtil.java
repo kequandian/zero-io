@@ -1,7 +1,7 @@
 package com.jfeat.common;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
@@ -82,7 +82,7 @@ public class JsonUtil {
             throw new RuntimeException(var8);
         }
 
-        return JSONObject.parseArray(sb.toString());
+        return JSONArray.parseArray(sb.toString());
     }
 
     public static void main(String[] args) {

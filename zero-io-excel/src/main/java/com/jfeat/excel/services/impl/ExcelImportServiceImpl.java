@@ -1,7 +1,7 @@
 package com.jfeat.excel.services.impl;
 
 import cn.hutool.core.io.IoUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.jfeat.common.ResourceUtil;
 import com.jfeat.excel.constant.ExcelConstant;
 import com.jfeat.excel.properties.ExcelProperties;

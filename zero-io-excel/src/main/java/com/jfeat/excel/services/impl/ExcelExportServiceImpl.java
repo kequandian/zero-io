@@ -5,10 +5,10 @@ import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.TypeReference;
 import com.jfeat.common.HttpUtil;
 import com.jfeat.common.ResourceUtil;
 import com.jfeat.excel.constant.ExcelConstant;
@@ -241,7 +241,7 @@ public class ExcelExportServiceImpl implements ExcelExportService {
         List<Map<String, Object>> list = new ArrayList<>();
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.size(); i++) {
-                Map<String, Object> innerMap = jsonArray.getJSONObject(i).getInnerMap();
+                Map<String, Object> innerMap = jsonArray.getJSONObject(i);
                 // 根据字典转换
                 list.add(handleExcelDictionary(innerMap, dict));
             }

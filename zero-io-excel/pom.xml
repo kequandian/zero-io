@@ -1,54 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jfeat</groupId>
+    <artifactId>zero-io-excel</artifactId>
+    <version>21.0.0</version>
+    <packaging>jar</packaging>
+
+    <!-- upgrade history
+    from 1.2.0 to 21.0.0
+    @when 2026-04-11
+    - Upgrade to Java 17 + Spring Boot 3.4.x
+    - Migrate javax.* to jakarta.* namespace
+    - Change parent from pom-parent to plat-parent
+    -->
+
+    <name>zero-io-excel</name>
+    <description>zero-io excel module</description>
+
     <parent>
-        <groupId>com.jfeat</groupId>
-        <artifactId>pom-parent</artifactId>
+        <groupId>com.xinzhi.plat</groupId>
+        <artifactId>plat-parent</artifactId>
         <version>1.0.0</version>
         <relativePath/>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.jfeat</groupId>
-    <artifactId>zero-io-excel</artifactId>
-    <version>1.2.0</version>
-
-
-    <!--  upgrade history
-    1.2.0: when 2021-11-02
-           remove zero-io-core
-
-  -->
 
     <properties>
         <skipStandalone>true</skipStandalone>
         <skipTest>true</skipTest>
         <springdoc.skip>true</springdoc.skip>
         <java.version>17</java.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>3.4.2</spring-boot.version>
-        <lombok.version>1.18.30</lombok.version>
         <poi-ooxml.version>5.2.5</poi-ooxml.version>
-        <zero-io-common.version>1.0.0</zero-io-common.version>
+        <jwt-core.version>21.0.0</jwt-core.version>
+        <zero-io-common.version>21.0.0</zero-io-common.version>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Spring Boot BOM -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- plat-common -->
+        <dependency>
+            <groupId>com.xinzhi.plat</groupId>
+            <artifactId>plat-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- jwt-core -->
+        <dependency>
+            <groupId>com.jfeat</groupId>
+            <artifactId>jwt-core</artifactId>
+            <version>${jwt-core.version}</version>
+        </dependency>
+
+        <!-- crud-plus -->
+        <dependency>
+            <groupId>com.jfeat</groupId>
+            <artifactId>crud-plus</artifactId>
+            <version>21.0.0</version>
+        </dependency>
+
+        <!-- zero-io-common -->
+        <dependency>
+            <groupId>com.jfeat</groupId>
+            <artifactId>zero-io-common</artifactId>
+            <version>${zero-io-common.version}</version>
+        </dependency>
+
+        <!--springboot test-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Jakarta EE Dependencies (Spring Boot 3.x) -->
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -64,69 +92,36 @@
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
-<!--        用在科海项目的时候，科海的token无法通过house的token验证，所以暂时去除house依赖-->
-<!--        <dependency>-->
-<!--            <groupId>com.jfeat</groupId>-->
-<!--            <artifactId>house</artifactId>-->
-<!--            <version>1.0.0</version>-->
-<!--        </dependency>-->
+        <!-- H2 Database -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.194</version>
+            <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jfeat</groupId>
-            <artifactId>crud-core</artifactId>
-            <version>${crud-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jfeat</groupId>
-            <artifactId>crud-plus</artifactId>
-            <version>${crud-plus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jfeat</groupId>
-            <artifactId>jwt-core</artifactId>
-            <version>${jwt-core.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.jfeat</groupId>
-            <artifactId>zero-io-common</artifactId>
-            <version>${zero-io-common.version}</version>
-        </dependency>
-
-        <!-- poi-ooxml 和 poi 需要使用相同的版本，否则会出现问题 -->
+        <!-- poi-ooxml and poi need same version -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-             <version>${poi-ooxml.version}</version>
+            <version>${poi-ooxml.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>${poi-ooxml.version}</version>
         </dependency>
 
+        <!-- EasyPOI -->
         <dependency>
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-base</artifactId>
+            <version>4.1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
-            <version>4.1.0</version>
         </dependency>
         <dependency>
             <groupId>cn.afterturn</groupId>
@@ -139,18 +134,19 @@
             <version>4.1.0</version>
         </dependency>
 
+        <!-- MySQL Driver -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
-        <!--引用报表模块-->
-        <!--<dependency>
-            <groupId>com.jfeat</groupId>
-            <artifactId>statistic</artifactId>
-            <version>1.3.0</version>
-        </dependency>-->
+        <!-- SpringDoc OpenAPI (Swagger 3) -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.7.0</version>
+        </dependency>
 
         <!-- JUnit 5 for Spring Boot 3.x -->
         <dependency>
@@ -158,23 +154,10 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- spring-boot 测试-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- OpenAPI 3 for Spring Boot 3.x -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.3.0</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Maven compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -187,17 +170,16 @@
                 </configuration>
             </plugin>
 
-            <!-- mvn 生命周期的测试阶段的插件 -->
+            <!-- mvn test phase plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <!-- 默认跳过测试 -->
                 <configuration>
                     <skip>${skipTest}</skip>
                 </configuration>
             </plugin>
 
-            <!--配置生成源码包-->
+            <!-- generate source package -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -211,11 +193,11 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- spring 打包插件-->
+
+            <!-- spring boot package plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
                 <configuration>
                     <skip>${skipStandalone}</skip>
                 </configuration>
@@ -237,25 +219,10 @@
                 <version>3.1.2</version>
             </plugin>
 
-            <!-- OpenAPI 3 specification generator -->
             <plugin>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-maven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
-                    <outputFileName>openapi.json</outputFileName>
-                    <outputDir>${project.build.directory}/swagger</outputDir>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
-
         </plugins>
 
         <resources>
@@ -265,7 +232,6 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-<!--                    <exclude>**/excel-templates/*</exclude>-->
                     <exclude>**/h2/*</exclude>
                     <exclude>**/meta/*</exclude>
                 </excludes>
@@ -279,6 +245,13 @@
         </resources>
     </build>
 
+    <repositories>
+        <repository>
+            <id>archiva-internal</id>
+            <name>Internal Repository</name>
+            <url>http://120.79.49.72:8081/repository/internal</url>
+        </repository>
+    </repositories>
 
     <distributionManagement>
         <repository>
@@ -287,12 +260,4 @@
             <url>http://120.79.49.72:8081/repository/internal</url>
         </repository>
     </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>archiva-internal</id>
-            <name>Internal Repository</name>
-            <url>http://120.79.49.72:8081/repository/internal</url>
-        </repository>
-    </repositories>
 </project>

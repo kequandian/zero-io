@@ -1,6 +1,6 @@
 package com.jfeat.poi.agent.util;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.jfeat.crud.base.exception.BusinessCode;
 import com.jfeat.crud.base.exception.BusinessException;
 import com.jfeat.poi.agent.im.request.Option;

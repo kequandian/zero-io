@@ -13,12 +13,14 @@ spring:
 
 ---
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   datasource:
     url: jdbc:mysql://mysql57.webtools.io:3307/coop?autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
     username: root
     password: Nhy6%tgb
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     filters: log4j,wall,mergeStat
     sql-script-encoding: UTF-8
     schema: classpath*:sql/**/*-schema.sql
@@ -27,7 +29,9 @@ spring:
 ---
 
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   datasource:
     url: jdbc:h2:mem:power;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
     driver-class-name: org.h2.Driver
