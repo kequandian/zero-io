@@ -141,6 +141,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- PostgreSQL Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- SpringDoc OpenAPI (Swagger 3) -->
         <dependency>
             <groupId>org.springdoc</groupId>

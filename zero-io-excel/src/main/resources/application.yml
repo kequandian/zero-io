@@ -9,13 +9,13 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: dev-mysql
 
 ---
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: dev-mysql
   datasource:
     url: jdbc:mysql://mysql57.webtools.io:3307/coop?autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
     username: root
